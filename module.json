@@ -1,0 +1,154 @@
+{
+	"name":"Lighttoys FT",
+	"type":"Serial",
+	"path":"Lighttoys",
+
+	"hasInput":true,
+	"hasOutput":true, 
+
+	"hideDefaultCommands":true,
+
+	"vidFilter": "0x04D8",
+	"pidFilter": "0x00DF",
+
+	"parameters":
+	{
+		"Ping All": { "type":"Trigger" }
+	},
+
+	"defaults":
+	{		
+		"baudRate":115200,
+		"autoAdd":false
+	},
+
+
+
+	"hideDefaultParameters":
+	[
+		"protocol",
+		"autoAdd",
+		"splitArguments",
+		"messageStructure",
+		"firstValueIsTheName",
+		"baudRate"
+	],
+
+
+	"scripts":
+	[
+		"Lighttoys.js"
+	],
+
+	"values":
+	{
+		"Connected Devices":
+		{
+			"type":"Container",
+
+			"Device 0":  { "type":"Float", "min":0,"max":15},
+			"Device 1":  { "type":"Float", "min":0,"max":15},
+			"Device 2":  { "type":"Float", "min":0,"max":15},
+			"Device 3":  { "type":"Float", "min":0,"max":15},
+			"Device 4":  { "type":"Float", "min":0,"max":15},
+			"Device 5":  { "type":"Float", "min":0,"max":15},
+			"Device 6":  { "type":"Float", "min":0,"max":15},
+			"Device 7":  { "type":"Float", "min":0,"max":15},
+			"Device 8":  { "type":"Float", "min":0,"max":15},
+			"Device 9":  { "type":"Float", "min":0,"max":15},
+			"Device 10": { "type":"Float", "min":0,"max":15},
+			"Device 11": { "type":"Float", "min":0,"max":15},
+			"Device 12": { "type":"Float", "min":0,"max":15},
+			"Device 13": { "type":"Float", "min":0,"max":15},
+			"Device 14": { "type":"Float", "min":0,"max":15},
+			"Device 15": { "type":"Float", "min":0,"max":15},
+			"Device 16": { "type":"Float", "min":0,"max":15},
+			"Device 17": { "type":"Float", "min":0,"max":15},
+			"Device 18": { "type":"Float", "min":0,"max":15},
+			"Device 19": { "type":"Float", "min":0,"max":15},
+			"Device 20": { "type":"Float", "min":0,"max":15},
+			"Device 21": { "type":"Float", "min":0,"max":15},
+			"Device 22": { "type":"Float", "min":0,"max":15},
+			"Device 23": { "type":"Float", "min":0,"max":15},
+			"Device 24": { "type":"Float", "min":0,"max":15},
+			"Device 25": { "type":"Float", "min":0,"max":15},
+			"Device 26": { "type":"Float", "min":0,"max":15},
+			"Device 27": { "type":"Float", "min":0,"max":15},
+			"Device 28": { "type":"Float", "min":0,"max":15},
+			"Device 29": { "type":"Float", "min":0,"max":15},
+			"Device 30": { "type":"Float", "min":0,"max":15},
+			"Device 31": { "type":"Float", "min":0,"max":15},
+		}
+	},
+
+	"commands":
+	{
+		"Flash All":
+		{
+			"menu":"Simple",
+			"callback":"flashAll",
+			"parameters":
+			{
+			}
+		},
+
+		"Flash 1":
+		{
+			"menu":"Simple",
+			"callback":"flash1",
+			"parameters":
+			{
+				"ID":
+				{
+					"type":"Integer",
+					"min":0,
+					"max":31
+				}
+			}
+		},
+
+		"Flash Range":
+		{
+			"menu":"Simple",
+			"callback":"flashRange",
+			"parameters":
+			{
+				"Start ID":
+				{
+					"type":"Integer",
+					"min":0,
+					"max":31
+				},
+				"End ID":
+				{
+					"type":"Integer",
+					"value":9,
+					"min":0,
+					"max":31
+				},
+			}
+		},
+
+		"Color":
+		{
+			"menu":"Advanced",
+			"callback":"colorClub",
+			"arguments":
+			{
+				"Bottom":
+				{
+					"type":"Boolean"
+				},
+				"Top":
+				{
+					"type":"Boolean"
+				},
+				"Color":
+				{
+					"type":"Color"
+				}
+				
+			}
+		}
+	}
+}

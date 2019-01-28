@@ -34,6 +34,9 @@ function moduleParameterChanged(param)
 	if(param.name == "pingAll")
 	{
 		flash("all",0,0,0);
+	}else if(param.name == "blackOut")
+	{
+		blackOut("all",0,0,0);
 	}else if(param.name == "addNewPairingGroup")
 	{
 		pairingMode = true;

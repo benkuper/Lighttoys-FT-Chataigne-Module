@@ -14,6 +14,7 @@
 	"parameters":
 	{
 		"Ping All": { "type":"Trigger" },
+		"Black Out": { "type": "Trigger" },
 		"Add new pairing group": { "type":"Trigger" },
 		"Add to group": { "type":"Trigger" },
 		"Finish pairing": { "type":"Trigger" }

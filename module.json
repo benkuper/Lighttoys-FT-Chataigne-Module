@@ -13,7 +13,10 @@
 
 	"parameters":
 	{
-		"Ping All": { "type":"Trigger" }
+		"Ping All": { "type":"Trigger" },
+		"Add new pairing group": { "type":"Trigger" },
+		"Add to group": { "type":"Trigger" },
+		"Finish pairing": { "type":"Trigger" }
 	},
 
 	"defaults":
@@ -46,6 +49,8 @@
 		{
 			"type":"Container",
 
+			"Num Paired":{"type":"Integer"},
+			"Num Connected":{"type":"Integer"},
 			"Device 0":  { "type":"Float", "min":0,"max":15},
 			"Device 1":  { "type":"Float", "min":0,"max":15},
 			"Device 2":  { "type":"Float", "min":0,"max":15},
@@ -83,34 +88,354 @@
 
 	"commands":
 	{
-		"Flash All":
+		"Flash":
 		{
-			"menu":"Simple",
-			"callback":"flashAll",
+			"menu":"",
+			"callback":"flash",
 			"parameters":
 			{
-			}
-		},
+				"Target":
+				{
+					"type":"Enum",
+					"options":
+					{
+						"All":"all",
+						"One":"one",
+						"Range":"range"
+					}
+				},
 
-		"Flash 1":
-		{
-			"menu":"Simple",
-			"callback":"flash1",
-			"parameters":
-			{
 				"ID":
 				{
 					"type":"Integer",
 					"min":0,
-					"max":31
+					"max":31,
+					"useForMapping":true,
+					"dependency": 
+					{
+						"source":"target",
+						"value":"one",
+						"check":"equals",
+						"action":"show"
+					}
+				},
+
+				"Start ID":
+				{
+					"type":"Integer",
+					"min":0,
+					"max":31,
+					"dependency": 
+					{
+						"source":"target",
+						"value":"range",
+						"check":"equals",
+						"action":"show"
+					}
+				},
+				
+				"End ID":
+				{
+					"type":"Integer",
+					"default":9,
+					"min":0,
+					"max":31,
+					"dependency": 
+					{
+						"source":"target",
+						"value":"range",
+						"check":"equals",
+						"action":"show"
+					}
 				}
 			}
 		},
 
-		"Flash Range":
+
+		"Color":
 		{
-			"menu":"Simple",
-			"callback":"flashRange",
+			"menu":"",
+			"callback":"color",
+			"parameters":
+			{
+				"Target":
+				{
+					"type":"Enum",
+					"options":
+					{
+						"All":"all",
+						"One":"one",
+						"Range":"range"
+					}
+				},
+
+				"ID":
+				{
+					"type":"Integer",
+					"min":0,
+					"max":31,
+					"dependency": 
+					{
+						"source":"target",
+						"value":"one",
+						"check":"equals",
+						"action":"show"
+					}
+				},
+
+				"Start ID":
+				{
+					"type":"Integer",
+					"min":0,
+					"max":31,
+					"dependency": 
+					{
+						"source":"target",
+						"value":"range",
+						"check":"equals",
+						"action":"show"
+					}
+				},
+				
+				"End ID":
+				{
+					"type":"Integer",
+					"default":9,
+					"min":0,
+					"max":31,
+					"dependency": 
+					{
+						"source":"target",
+						"value":"range",
+						"check":"equals",
+						"action":"show"
+					}
+				},
+
+				"Color":
+				{
+					"type":"Color",
+					"useForMapping":true
+				}
+				
+			}
+		},
+
+
+		"Start Show":
+		{
+			"menu":"",
+			"callback":"startShow",
+			"parameters":
+			{
+				"Target":
+				{
+					"type":"Enum",
+					"options":
+					{
+						"All":"all",
+						"One":"one",
+						"Range":"range"
+					}
+				},
+
+				"ID":
+				{
+					"type":"Integer",
+					"min":0,
+					"max":31,
+					"useForMapping":true,
+					"dependency": 
+					{
+						"source":"target",
+						"value":"one",
+						"check":"equals",
+						"action":"show"
+					}
+				},
+
+				"Start ID":
+				{
+					"type":"Integer",
+					"min":0,
+					"max":31,
+					"dependency": 
+					{
+						"source":"target",
+						"value":"range",
+						"check":"equals",
+						"action":"show"
+					}
+				},
+				
+				"End ID":
+				{
+					"type":"Integer",
+					"default":9,
+					"min":0,
+					"max":31,
+					"dependency": 
+					{
+						"source":"target",
+						"value":"range",
+						"check":"equals",
+						"action":"show"
+					}
+				},
+
+				"Show Number":
+				{
+					"type":"Integer",
+					"default":1,
+					"min":1,
+					"max":4
+				},
+
+				"Delay":
+				{
+					"type":"Float",
+					"ui":"time"					
+				},
+
+				"Start Time":
+				{
+					"type":"Float",
+					"ui":"time"
+				}
+
+			}
+		},
+
+		"Stop Show":
+		{
+			"menu":"",
+			"callback":"stopShow",
+			"parameters":
+			{
+				"Target":
+				{
+					"type":"Enum",
+					"options":
+					{
+						"All":"all",
+						"One":"one",
+						"Range":"range"
+					}
+				},
+
+				"ID":
+				{
+					"type":"Integer",
+					"min":0,
+					"max":31,
+					"useForMapping":true,
+					"dependency": 
+					{
+						"source":"target",
+						"value":"one",
+						"check":"equals",
+						"action":"show"
+					}
+				},
+
+				"Start ID":
+				{
+					"type":"Integer",
+					"min":0,
+					"max":31,
+					"dependency": 
+					{
+						"source":"target",
+						"value":"range",
+						"check":"equals",
+						"action":"show"
+					}
+				},
+				
+				"End ID":
+				{
+					"type":"Integer",
+					"default":9,
+					"min":0,
+					"max":31,
+					"dependency": 
+					{
+						"source":"target",
+						"value":"range",
+						"check":"equals",
+						"action":"show"
+					}
+				}
+			}
+		},
+
+		"Black Out":
+		{
+			"menu":"",
+			"callback":"blackOut",
+			"parameters":
+			{
+				"Target":
+				{
+					"type":"Enum",
+					"options":
+					{
+						"All":"all",
+						"One":"one",
+						"Range":"range"
+					}
+				},
+
+				"ID":
+				{
+					"type":"Integer",
+					"min":0,
+					"max":31,
+					"useForMapping":true,
+					"dependency": 
+					{
+						"source":"target",
+						"value":"one",
+						"check":"equals",
+						"action":"show"
+					}
+				},
+
+				"Start ID":
+				{
+					"type":"Integer",
+					"min":0,
+					"max":31,
+					"dependency": 
+					{
+						"source":"target",
+						"value":"range",
+						"check":"equals",
+						"action":"show"
+					}
+				},
+				
+				"End ID":
+				{
+					"type":"Integer",
+					"default":9,
+					"min":0,
+					"max":31,
+					"dependency": 
+					{
+						"source":"target",
+						"value":"range",
+						"check":"equals",
+						"action":"show"
+					}
+				}
+			}
+		},
+
+		"Gradient":
+		{
+			"menu":"Advanced",
+			"callback":"gradient",
 			"parameters":
 			{
 				"Start ID":
@@ -119,36 +444,27 @@
 					"min":0,
 					"max":31
 				},
+				
 				"End ID":
 				{
 					"type":"Integer",
-					"value":9,
+					"default":9,
 					"min":0,
 					"max":31
 				},
-			}
-		},
 
-		"Color":
-		{
-			"menu":"Advanced",
-			"callback":"colorClub",
-			"arguments":
-			{
-				"Bottom":
+				"Start Color":
 				{
-					"type":"Boolean"
+					"type":"Color",
+					"useForMapping":true
 				},
-				"Top":
-				{
-					"type":"Boolean"
-				},
-				"Color":
+
+				"End Color":
 				{
 					"type":"Color"
 				}
 				
 			}
-		}
+		},
 	}
 }

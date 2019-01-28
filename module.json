@@ -13,6 +13,7 @@
 
 	"parameters":
 	{
+		"Update Rate": { "type":"Integer","default":20,"min":0,"max":100},
 		"Ping All": { "type":"Trigger" },
 		"Black Out": { "type": "Trigger" },
 		"Add new pairing group": { "type":"Trigger" },
@@ -25,8 +26,6 @@
 		"baudRate":115200,
 		"autoAdd":false
 	},
-
-
 
 	"hideDefaultParameters":
 	[

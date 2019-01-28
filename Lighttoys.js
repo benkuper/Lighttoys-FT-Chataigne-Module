@@ -3,9 +3,14 @@ var lastCheckTime = 0;
 var slaveCheckList = [];
 var pairingMode = false;
 var slaveListIndex = 0;
+var colors = [];
+
+var updateRate = local.parameters.updateRate.get() == 0?0:1.0 / local.parameters.updateRate.get();
+var lastUpdateTime = 0;
 
 for(var i=0;i<32;i++) 
 {
+	colors[i] = [0,0,0];
 	slaveCheckList[i] = false;
 }
 
@@ -24,9 +29,31 @@ function update()
 			local.send("glist");
 			for(var i=0;i<32;i++) slaveCheckList[i] = false;
 		}
+
+		if(updateRate > 0 && time > lastUpdateTime+updateRate)
+		{
+			lastUpdateTime = time;
+			sendAllColors();
+
+		}
+	}
+}
+
+function sendAllColors()
+{
+	var numPaired = local.values.connectedDevices.numPaired.get();
+	var numConnected = local.values.connectedDevices.numConnected.get();
+
+	for(var i=0;i<numPaired;i++)
+	{
+		//if(!slaveCheckList[i]) continue; //not connected
+		var r = colors[i][0];
+		var g = colors[i][1];
+		var b = colors[i][2];
+		var targetMask = 1 << i;
+		local.send("leach "+targetMask+","+r+","+g+","+b+","+r+","+g+","+b);
 	}
 	
-
 }
 
 function moduleParameterChanged(param)
@@ -52,6 +79,10 @@ function moduleParameterChanged(param)
 		pairingMode = false;
 		local.send("gstop");
 		script.log("Finish pairing");
+	}else if(param.name == "updateRate")
+	{
+		updateRate = param.get() == 0?0:1.0/param.get();
+		script.log("new update rate : "+updateRate);
 	}
 }
 
@@ -111,7 +142,23 @@ function color(target, propID, startID, endID, color)
 	var g = parseInt(color[1]*255);
 	var r = parseInt(color[2]*255);
 
-	local.send("leach "+targetMask+","+r+","+g+","+b+","+r+","+g+","+b);
+	var col = [r,g,b];
+
+	if(target == "one") 
+	{
+		colors[propID] = col;
+	}
+	else if(target == "range")
+	{
+		var minID = Math.min(startID, endID);
+		var maxID = Math.max(startID, endID);
+		for(var i=minID;i < maxID;i++) colors[i] = col;
+	}else if(target == "all") 
+	{
+		for(var i=0;i<32;i++) colors[i] = col;
+	}
+
+	if(updateRate == 0) local.send("leach "+targetMask+","+r+","+g+","+b+","+r+","+g+","+b);
 }
 
 function startShow(target, propID, startID, endID, showID, delay, startTime)
@@ -165,8 +212,10 @@ function gradient(startID, endID, color1, color2)
 		var g = parseInt((g1+(g2-g1)*p)*255);
 		var b = parseInt((b1+(b2-b1)*p)*255);
 
+		colors[i] = [r,g,b];
+
 		targetMask = 1 << i;
-		local.send("leach "+targetMask+","+r+","+g+","+b+","+r+","+g+","+b);
+		if(updateRate == 0) local.send("leach "+targetMask+","+r+","+g+","+b+","+r+","+g+","+b);
 	} 
 	
 }

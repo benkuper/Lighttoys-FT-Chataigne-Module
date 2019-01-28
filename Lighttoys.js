@@ -171,7 +171,7 @@ function gradient(startID, endID, color1, color2)
 //Helpers
 function getMaskForTarget(target, propID, startID, endID)
 {
-	if(target == "all") return 4292967295;
+	if(target == "all") return 1099511627775;
 	else if(target == "one") return 1 << propID;
 	else if(target == "range") 
 	{

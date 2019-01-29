@@ -2,6 +2,7 @@
 	"name":"Lighttoys FT",
 	"type":"Serial",
 	"path":"Lighttoys",
+	"version":"1.0.0",
 
 	"hasInput":true,
 	"hasOutput":true, 
@@ -110,7 +111,6 @@
 					"type":"Integer",
 					"min":0,
 					"max":31,
-					"useForMapping":true,
 					"dependency": 
 					{
 						"source":"target",
@@ -214,8 +214,7 @@
 
 				"Color":
 				{
-					"type":"Color",
-					"useForMapping":true
+					"type":"Color"
 				}
 				
 			}
@@ -244,7 +243,6 @@
 					"type":"Integer",
 					"min":0,
 					"max":31,
-					"useForMapping":true,
 					"dependency": 
 					{
 						"source":"target",
@@ -328,7 +326,6 @@
 					"type":"Integer",
 					"min":0,
 					"max":31,
-					"useForMapping":true,
 					"dependency": 
 					{
 						"source":"target",
@@ -391,7 +388,6 @@
 					"type":"Integer",
 					"min":0,
 					"max":31,
-					"useForMapping":true,
 					"dependency": 
 					{
 						"source":"target",
@@ -455,8 +451,7 @@
 
 				"Start Color":
 				{
-					"type":"Color",
-					"useForMapping":true
+					"type":"Color"
 				},
 
 				"End Color":

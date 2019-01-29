@@ -214,10 +214,39 @@ function gradient(startID, endID, color1, color2)
 
 		colors[i] = [r,g,b];
 
-		targetMask = 1 << i;
-		if(updateRate == 0) local.send("leach "+targetMask+","+r+","+g+","+b+","+r+","+g+","+b);
+		
+		if(updateRate == 0) 
+		{
+			targetMask = 1 << i;
+			local.send("leach "+targetMask+","+r+","+g+","+b+","+r+","+g+","+b);
+		}
 	} 
 	
+}
+
+function point(startID, endID, position, size, fade, color)
+{
+	var b = color[0];
+	var g = color[1];
+	var r = color[2];
+
+	for(var i=startID;i<=endID;i++)
+	{
+		var p = (i-startID)*1.0/(endID-startID);
+
+		if(Math.abs(position-p) < size) 
+		{
+			var fac = Math.min(Math.max(1-Math.abs((p-position)*fade*3/size),0),1);
+			colors[i] = [parseInt(r*fac*255), parseInt(g*fac*255), parseInt(b*fac*255)];
+		}
+		else colors[i] = [0,0,0];
+	}
+
+	if(updateRate == 0)
+	{
+		targetMask = 1 << i;
+		local.send("leach "+targetMask+","+r+","+g+","+b+","+r+","+g+","+b);
+	}
 }
 
 //Helpers

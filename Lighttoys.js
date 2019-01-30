@@ -15,6 +15,8 @@ for(var i=0;i<32;i++)
 
 function update()
 {
+	if(!local.parameters.isConnected.get()) return;
+	
 	if(!pairingMode)
 	{
 		var time = util.getTime();

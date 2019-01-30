@@ -2,7 +2,6 @@ var lastCheckTime = 0;
 
 var slaveCheckList = [];
 var pairingMode = false;
-var slaveListIndex = 0;
 var colors = [];
 
 var updateRate = local.parameters.updateRate.get() == 0?0:1.0 / local.parameters.updateRate.get();
@@ -25,7 +24,6 @@ function update()
 			lastCheckTime = time;
 
 			//send list request
-			slaveListIndex = 0;
 			local.send("glist");
 			for(var i=0;i<32;i++) slaveCheckList[i] = false;
 		}
@@ -97,19 +95,16 @@ function dataReceived(data)
 		if(pairingTarget == "master")
 		{
 			local.values.connectedDevices.numPaired.set(parseInt(dataSplit[2].substring(5, dataSplit[2].length)));
-		}else if(data.substring(6,11) == "slave") 
+		}else if(pairingTarget == "slave") 
 		{
-			var dataSplit = data.split(";");
 			var propID = parseInt(dataSplit[1].substring(3,dataSplit[1].length));
 			var isOn = dataSplit[7].substring(8,9) == "+";
 			var voltageString = dataSplit[5];
 			var voltage = parseInt(voltageString.substring(4,voltageString.length)) / 0x10000;
 			slaveCheckList[propID] = isOn;
-			lastSlaveFromList = propID;
 			local.values.connectedDevices.getChild("device"+propID).set(isOn?voltage:0);
 			
-			slaveListIndex++;
-			if(slaveListIndex == local.values.connectedDevices.numPaired.get())
+			if(propID == local.values.connectedDevices.numPaired.get()-1)
 			{
 				var numConnected = 0;
 				for(var i=0;i<32;i++) 

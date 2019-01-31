@@ -14,12 +14,52 @@
 
 	"parameters":
 	{
-		"Update Rate": { "type":"Integer","default":20,"min":0,"max":100},
+		"Always Update":{"type":"Boolean"},
+		"Update Rate": { "type":"Integer","default":20,"min":1,"max":100},
 		"Ping All": { "type":"Trigger" },
 		"Black Out": { "type": "Trigger" },
 		"Add new pairing group": { "type":"Trigger" },
 		"Add to group": { "type":"Trigger" },
-		"Finish pairing": { "type":"Trigger" }
+		"Finish pairing": { "type":"Trigger" },
+
+		"Device Names":
+		{
+			"type":"Container",
+			"collapsed":true,
+
+			"Device 0":  { "type":"String"},
+			"Device 1":  { "type":"String"},
+			"Device 2":  { "type":"String"},
+			"Device 3":  { "type":"String"},
+			"Device 4":  { "type":"String"},
+			"Device 5":  { "type":"String"},
+			"Device 6":  { "type":"String"},
+			"Device 7":  { "type":"String"},
+			"Device 8":  { "type":"String"},
+			"Device 9":  { "type":"String"},
+			"Device 10": { "type":"String"},
+			"Device 11": { "type":"String"},
+			"Device 12": { "type":"String"},
+			"Device 13": { "type":"String"},
+			"Device 14": { "type":"String"},
+			"Device 15": { "type":"String"},
+			"Device 16": { "type":"String"},
+			"Device 17": { "type":"String"},
+			"Device 18": { "type":"String"},
+			"Device 19": { "type":"String"},
+			"Device 20": { "type":"String"},
+			"Device 21": { "type":"String"},
+			"Device 22": { "type":"String"},
+			"Device 23": { "type":"String"},
+			"Device 24": { "type":"String"},
+			"Device 25": { "type":"String"},
+			"Device 26": { "type":"String"},
+			"Device 27": { "type":"String"},
+			"Device 28": { "type":"String"},
+			"Device 29": { "type":"String"},
+			"Device 30": { "type":"String"},
+			"Device 31": { "type":"String"}
+		}
 	},
 
 	"defaults":
@@ -84,15 +124,15 @@
 			"Device 29": { "type":"Float", "min":0,"max":15},
 			"Device 30": { "type":"Float", "min":0,"max":15},
 			"Device 31": { "type":"Float", "min":0,"max":15},
-		}
+		}		
 	},
 
 	"commands":
 	{
-		"Flash":
+		"Ping":
 		{
 			"menu":"",
-			"callback":"flash",
+			"callback":"ping",
 			"parameters":
 			{
 				"Target":

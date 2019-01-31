@@ -5,6 +5,7 @@ var pairingMode = false;
 var colors = [];
 
 var updateRate = local.parameters.updateRate.get() == 0?0:1.0 / local.parameters.updateRate.get();
+var alwaysUpdate = local.parameters.alwaysUpdate.get();
 var lastUpdateTime = 0;
 
 for(var i=0;i<32;i++) 
@@ -21,16 +22,17 @@ function update()
 	{
 		var time = util.getTime();
 
-		if(time > lastCheckTime + 2) //check each second
+		if(time > lastCheckTime + 5) //check every 5 seconds
 		{
 			lastCheckTime = time;
 
 			//send list request
-			local.send("glist");
 			for(var i=0;i<32;i++) slaveCheckList[i] = false;
+			local.send("glist");
+			
 		}
 
-		if(updateRate > 0 && time > lastUpdateTime+updateRate)
+		if(alwaysUpdate && time > lastUpdateTime+updateRate)
 		{
 			lastUpdateTime = time;
 			sendAllColors();
@@ -60,7 +62,7 @@ function moduleParameterChanged(param)
 {
 	if(param.name == "pingAll")
 	{
-		flash("all",0,0,0);
+		ping("all",0,0,0);
 	}else if(param.name == "blackOut")
 	{
 		blackOut("all",0,0,0);
@@ -83,6 +85,18 @@ function moduleParameterChanged(param)
 	{
 		updateRate = param.get() == 0?0:1.0/param.get();
 		script.log("new update rate : "+updateRate);
+	}else if(param.name == "alwaysUpdate")
+	{
+		alwaysUpdate = local.parameters.alwaysUpdate.get();
+	}else if(param.name == "isConnected")
+	{
+
+	}else if(param.getParent().name == "deviceNames")
+	{
+		var propID = parseInt(param.name.substring(6, param.name.length));
+		var propMask = getMaskForTarget("one",propID,0,0);
+		script.log("Changing of Device "+propID+" to "+param.get());
+		local.send("gname "+propMask+","+param.get());
 	}
 }
 
@@ -106,6 +120,8 @@ function dataReceived(data)
 			slaveCheckList[propID] = isOn;
 			local.values.connectedDevices.getChild("device"+propID).set(isOn?voltage:0);
 			
+			local.send("gname "+getMaskForTarget("one",propID,0,0));
+
 			if(propID == local.values.connectedDevices.numPaired.get()-1)
 			{
 				var numConnected = 0;
@@ -118,12 +134,25 @@ function dataReceived(data)
 				local.values.connectedDevices.numConnected.set(numConnected);
 			}
 		}
+	}else if(data.substring(0,3) == "UDN")
+	{
+		var dataSplit = data.split(";");
+		var propIDMask = parseInt(dataSplit[0].substring(7, dataSplit[0].length));
+		var propName = dataSplit[1].substring(3, dataSplit[1].length-2);
+		var propID = 0;
+		while(propIDMask > 1)
+		{
+			propID++;
+			propIDMask /= 2;
+		} 
+		local.parameters.deviceNames.getChild("device"+propID).set(propName);
+
 	}
 }
 
 
 //Commands callbacks
-function flash(target, propID, startID, endID)
+function ping(target, propID, startID, endID)
 {
 	var targetMask = getMaskForTarget(target, propID, startID, endID);
 	local.send("lstop "+targetMask);
@@ -155,7 +184,11 @@ function color(target, propID, startID, endID, color)
 		for(var i=0;i<32;i++) colors[i] = col;
 	}
 
-	if(updateRate == 0) local.send("leach "+targetMask+","+r+","+g+","+b+","+r+","+g+","+b);
+	if(!alwaysUpdate) 
+	{
+		if(!local.parameters.isConnected.get()) return;
+		local.send("leach "+targetMask+","+r+","+g+","+b+","+r+","+g+","+b);
+	}
 }
 
 function startShow(target, propID, startID, endID, showID, delay, startTime)
@@ -173,8 +206,15 @@ function stopShow(target, propID, startID, endID)
 
 function blackOut(target, propID, startID, endID)
 {
-	var targetMask = getMaskForTarget(target, propId, startID, endID);
-	local.send("leach "+targetMask+",0,0,0,0,0,0");
+	for(var i=0;i<31;i++) colors[i] = [0,0,0];
+
+	if(!alwaysUpdate)
+	{
+		if(!local.parameters.isConnected.get()) return;
+		var targetMask = getMaskForTarget(target, propId, startID, endID);
+		local.send("leach "+targetMask+",0,0,0,0,0,0");
+	}
+	
 }
 
 
@@ -212,8 +252,9 @@ function gradient(startID, endID, color1, color2)
 		colors[i] = [r,g,b];
 
 		
-		if(updateRate == 0) 
+		if(!alwaysUpdate) 
 		{
+			if(!local.parameters.isConnected.get()) return;
 			targetMask = 1 << i;
 			local.send("leach "+targetMask+","+r+","+g+","+b+","+r+","+g+","+b);
 		}
@@ -239,8 +280,9 @@ function point(startID, endID, position, size, fade, color)
 		else colors[i] = [0,0,0];
 	}
 
-	if(updateRate == 0)
+	if(!alwaysUpdate)
 	{
+		if(!local.parameters.isConnected.get()) return;
 		targetMask = 1 << i;
 		local.send("leach "+targetMask+","+r+","+g+","+b+","+r+","+g+","+b);
 	}

@@ -2,6 +2,7 @@
 	"name":"Lighttoys FT",
 	"type":"Serial",
 	"path":"Lighttoys",
+	"description":"Control Lighttoys FT devices using the FT Remote and this module !",
 	"version":"1.0.0",
 
 	"hasInput":true,

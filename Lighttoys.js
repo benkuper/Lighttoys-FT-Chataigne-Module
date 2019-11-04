@@ -199,24 +199,24 @@ function color(target, propID, startID, endID, mode, color1, color2)
 
 	if(target == "one") 
 	{
-		colors1[propID] = col1;
-		colors2[propID] = col2;
+		if(mode != "b") colors1[propID] = col1;
+		if(mode != "a") colors2[propID] = col2;
 	}
 	else if(target == "range")
 	{
 		var minID = Math.min(startID, endID);
 		var maxID = Math.max(startID, endID);
-		for(var i=minID;i < maxID;i++)
+		for(var i=minID;i <= maxID;i++)
 		{
-			colors1[i] = col1;
-			colors2[i] = col2;
+			if(mode != "b") colors1[i] = col1;
+			if(mode != "a") colors2[i] = col2;
 		}
 	}else if(target == "all") 
 	{
 		for(var i=0;i<32;i++)
 		{
-			colors1[propID] = col1;
-			colors2[propID] = col2;
+			if(mode != "b") colors1[i] = col1;
+			if(mode != "a") colors2[i] = col2;
 		}
 	}
 

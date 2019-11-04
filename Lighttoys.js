@@ -6,6 +6,8 @@ var colors2 = [];
 var alwaysUpdate = local.parameters.alwaysUpdate.get();
 var lastUpdateTime = 0;
 
+var updatingNames;
+
 for(var i=0;i<32;i++) 
 {
 	colors1[i] = [0,0,0];
@@ -13,10 +15,6 @@ for(var i=0;i<32;i++)
 	slaveCheckList[i] = false;
 }
 
-function init()
-{
-	local.send("mecho "+(local.parameters.enableEcho.get()?"1":"0"));
-}
 
 function update()
 {
@@ -89,13 +87,20 @@ function moduleParameterChanged(param)
 		alwaysUpdate = local.parameters.alwaysUpdate.get();
 	}else if(param.name == "isConnected")
 	{
-
+		if(local.parameters.isConnected.get())
+		{
+			local.send("mecho "+(local.parameters.enableEcho.get()?"1":"0"));
+		} 
 	}else if(param.getParent().name == "deviceNames")
 	{
-		var propID = parseInt(param.name.substring(6, param.name.length));
-		var propMask = getMaskForTarget("one",propID,0,0);
-		script.log("Changing of Device "+propID+" to "+param.get());
-		local.send("gname "+propMask+","+param.get());
+		if(!updatingNames)
+		{
+			var propID = parseInt(param.name.substring(6, param.name.length));
+			var propMask = getMaskForTarget("one",propID,0,0);
+			script.log("Changing of Device "+propID+" to "+param.get());
+			local.send("gname "+propMask+","+param.get());
+		}
+		
 	}else if(param.name == "enableEcho")
 	{
 		local.send("mecho "+(local.parameters.enableEcho.get()?"1":"0"));
@@ -138,9 +143,10 @@ function dataReceived(data)
 		}
 	}else if(data.substring(0,3) == "UDN")
 	{
+		updatingNames = true;
 		var dataSplit = data.split(";");
 		var propIDMask = parseInt(dataSplit[0].substring(7, dataSplit[0].length));
-		var propName = dataSplit[1].substring(3, dataSplit[1].length-2);
+		var propName = dataSplit[1].substring(3, dataSplit[1].length);
 		var propID = 0;
 		while(propIDMask > 1)
 		{
@@ -148,6 +154,7 @@ function dataReceived(data)
 			propIDMask /= 2;
 		} 
 		local.parameters.deviceNames.getChild("device"+propID).set(propName);
+		updatingNames = false;
 
 	}
 }

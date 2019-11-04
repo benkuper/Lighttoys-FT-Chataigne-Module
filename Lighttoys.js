@@ -1,17 +1,21 @@
-var lastCheckTime = 0;
-
 var slaveCheckList = [];
 var pairingMode = false;
-var colors = [];
+var colors1 = [];
+var colors2 = [];
 
-var updateRate = local.parameters.updateRate.get() == 0?0:1.0 / local.parameters.updateRate.get();
 var alwaysUpdate = local.parameters.alwaysUpdate.get();
 var lastUpdateTime = 0;
 
 for(var i=0;i<32;i++) 
 {
-	colors[i] = [0,0,0];
+	colors1[i] = [0,0,0];
+	colors2[i] = [0,0,0];
 	slaveCheckList[i] = false;
+}
+
+function init()
+{
+	local.send("mecho "+(local.parameters.enableEcho.get()?"1":"0"));
 }
 
 function update()
@@ -32,12 +36,7 @@ function update()
 			
 		}
 
-		if(alwaysUpdate && time > lastUpdateTime+updateRate)
-		{
-			lastUpdateTime = time;
-			sendAllColors();
-
-		}
+		if(alwaysUpdate) sendAllColors();
 	}
 }
 
@@ -49,11 +48,15 @@ function sendAllColors()
 	for(var i=0;i<numPaired;i++)
 	{
 		//if(!slaveCheckList[i]) continue; //not connected
-		var r = colors[i][0];
-		var g = colors[i][1];
-		var b = colors[i][2];
+		var r1 = colors1[i][0];
+		var g1 = colors1[i][1];
+		var b1 = colors1[i][2];
+		var r2 = colors2[i][0];
+		var g2 = colors2[i][1];
+		var b2 = colors2[i][2];
+
 		var targetMask = 1 << i;
-		local.send("leach "+targetMask+","+r+","+g+","+b+","+r+","+g+","+b);
+		local.send("leach "+targetMask+","+r1+","+g1+","+b1+","+r2+","+g2+","+b2);
 	}
 	
 }
@@ -81,10 +84,6 @@ function moduleParameterChanged(param)
 		pairingMode = false;
 		local.send("gstop");
 		script.log("Finish pairing");
-	}else if(param.name == "updateRate")
-	{
-		updateRate = param.get() == 0?0:1.0/param.get();
-		script.log("new update rate : "+updateRate);
 	}else if(param.name == "alwaysUpdate")
 	{
 		alwaysUpdate = local.parameters.alwaysUpdate.get();
@@ -97,6 +96,9 @@ function moduleParameterChanged(param)
 		var propMask = getMaskForTarget("one",propID,0,0);
 		script.log("Changing of Device "+propID+" to "+param.get());
 		local.send("gname "+propMask+","+param.get());
+	}else if(param.name == "enableEcho")
+	{
+		local.send("mecho "+(local.parameters.enableEcho.get()?"1":"0"));
 	}
 }
 
@@ -159,35 +161,62 @@ function ping(target, propID, startID, endID)
 	local.send("gping "+targetMask);
 }
 
-function color(target, propID, startID, endID, color)
+function color(target, propID, startID, endID, mode, color1, color2)
 {
 	var targetMask = getMaskForTarget(target, propID, startID, endID);
 
 	//Invert b and r because of inversion in the remote firmware 
-	var b = parseInt(color[0]*255);
-	var g = parseInt(color[1]*255);
-	var r = parseInt(color[2]*255);
+	var r1 = parseInt(color1[2]*255);
+	var g1 = parseInt(color1[1]*255);
+	var b1 = parseInt(color1[0]*255);
 
-	var col = [r,g,b];
+	var r2=r1, g2=g1, b2=b1;
+
+	if(mode == "ab")
+	{
+		r2 = parseInt(color2[2]*255);
+		g2 = parseInt(color2[1]*255);
+		b2 = parseInt(color2[0]*255);
+	}else if(mode == "a")
+	{
+		//r1 = r2; g1 = g2; b1 = b2;
+		r2 = -1; g2 = -1; b2 = -1;
+	}else if(mode == "b")
+	{
+		r2 = r1; g2 = g1; b2 = b1;
+		r1 = -1; g1 = -1; b1 = -1;
+	}
+
+	var col1 = [r1,g1,b1];
+	var col2 = [r2,g2,b2];
 
 	if(target == "one") 
 	{
-		colors[propID] = col;
+		colors1[propID] = col1;
+		colors2[propID] = col2;
 	}
 	else if(target == "range")
 	{
 		var minID = Math.min(startID, endID);
 		var maxID = Math.max(startID, endID);
-		for(var i=minID;i < maxID;i++) colors[i] = col;
+		for(var i=minID;i < maxID;i++)
+		{
+			colors1[i] = col1;
+			colors2[i] = col2;
+		}
 	}else if(target == "all") 
 	{
-		for(var i=0;i<32;i++) colors[i] = col;
+		for(var i=0;i<32;i++)
+		{
+			colors1[propID] = col1;
+			colors2[propID] = col2;
+		}
 	}
 
 	if(!alwaysUpdate) 
 	{
 		if(!local.parameters.isConnected.get()) return;
-		local.send("leach "+targetMask+","+r+","+g+","+b+","+r+","+g+","+b);
+		local.send("leach "+targetMask+","+r1+","+g1+","+b1+","+r2+","+g2+","+b2);
 	}
 }
 
@@ -206,7 +235,11 @@ function stopShow(target, propID, startID, endID)
 
 function blackOut(target, propID, startID, endID)
 {
-	for(var i=0;i<31;i++) colors[i] = [0,0,0];
+	for(var i=0;i<31;i++) 
+	{
+		colors1[i] = [0,0,0];
+		colors2[i] = colors1[i];
+	}
 
 	if(!alwaysUpdate)
 	{
@@ -249,8 +282,8 @@ function gradient(startID, endID, color1, color2)
 		var g = parseInt((g1+(g2-g1)*p)*255);
 		var b = parseInt((b1+(b2-b1)*p)*255);
 
-		colors[i] = [r,g,b];
-
+		colors1[i] = [r,g,b];
+		colors2[i] = colors1[i];
 		
 		if(!alwaysUpdate) 
 		{
@@ -275,11 +308,15 @@ function point(startID, endID, position, size, fade, color)
 		if(Math.abs(position-p) < size) 
 		{
 			var fac = Math.min(Math.max(1-Math.abs((p-position)*fade*3/size),0),1);
-			colors[i] = [parseInt(r*fac*255), parseInt(g*fac*255), parseInt(b*fac*255)];
+			colors1[i] = [parseInt(r*fac*255), parseInt(g*fac*255), parseInt(b*fac*255)];
+
 		}
-		else colors[i] = [0,0,0];
+		else colors1[i] = [0,0,0];
+
+		colors2[i] = colors1[i];
 	}
 
+	
 	if(!alwaysUpdate)
 	{
 		if(!local.parameters.isConnected.get()) return;

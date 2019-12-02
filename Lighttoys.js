@@ -30,7 +30,7 @@ function update()
 
 			//send list request
 			for(var i=0;i<32;i++) slaveCheckList[i] = false;
-			local.send("glist");
+			sendMessage("glist");
 			
 		}
 

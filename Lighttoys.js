@@ -54,7 +54,7 @@ function sendAllColors()
 		var b2 = colors2[i][2];
 
 		var targetMask = 1 << i;
-		local.send("leach "+targetMask+","+r1+","+g1+","+b1+","+r2+","+g2+","+b2);
+		sendMessage("leach "+targetMask+","+r1+","+g1+","+b1+","+r2+","+g2+","+b2);
 	}
 	
 }
@@ -70,17 +70,17 @@ function moduleParameterChanged(param)
 	}else if(param.name == "addNewPairingGroup")
 	{
 		pairingMode = true;
-		local.send("gadd 1");
+		sendMessage("gadd 1");
 		script.log("Start new pairing group");
 	}else if(param.name == "addToGroup")
 	{
 		pairingMode = true;
-		local.send("gadd 0");
+		sendMessage("gadd 0");
 		script.log("Pair new devices to the group");
 	}else if(param.name == "finishPairing")
 	{
 		pairingMode = false;
-		local.send("gstop");
+		sendMessage("gstop");
 		script.log("Finish pairing");
 	}else if(param.name == "alwaysUpdate")
 	{
@@ -89,7 +89,7 @@ function moduleParameterChanged(param)
 	{
 		if(local.parameters.isConnected.get())
 		{
-			local.send("mecho "+(local.parameters.enableEcho.get()?"1":"0"));
+			sendMessage("mecho "+(local.parameters.enableEcho.get()?"1":"0"));
 		} 
 	}else if(param.getParent().name == "deviceNames")
 	{
@@ -98,12 +98,12 @@ function moduleParameterChanged(param)
 			var propID = parseInt(param.name.substring(6, param.name.length));
 			var propMask = getMaskForTarget("one",propID,0,0);
 			script.log("Changing of Device "+propID+" to "+param.get());
-			local.send("gname "+propMask+","+param.get());
+			sendMessage("gname "+propMask+","+param.get());
 		}
 		
 	}else if(param.name == "enableEcho")
 	{
-		local.send("mecho "+(local.parameters.enableEcho.get()?"1":"0"));
+		sendMessage("mecho "+(local.parameters.enableEcho.get()?"1":"0"));
 	}
 }
 
@@ -127,7 +127,7 @@ function dataReceived(data)
 			slaveCheckList[propID] = isOn;
 			local.values.connectedDevices.getChild("device"+propID).set(isOn?voltage:0);
 			
-			local.send("gname "+getMaskForTarget("one",propID,0,0));
+			sendMessage("gname "+getMaskForTarget("one",propID,0,0));
 
 			if(propID == local.values.connectedDevices.numPaired.get()-1)
 			{
@@ -164,8 +164,8 @@ function dataReceived(data)
 function ping(target, propID, startID, endID)
 {
 	var targetMask = getMaskForTarget(target, propID, startID, endID);
-	local.send("lstop "+targetMask);
-	local.send("gping "+targetMask);
+	sendMessage("lstop "+targetMask);
+	sendMessage("gping "+targetMask);
 }
 
 function color(target, propID, startID, endID, mode, color1, color2)
@@ -223,20 +223,20 @@ function color(target, propID, startID, endID, mode, color1, color2)
 	if(!alwaysUpdate) 
 	{
 		if(!local.parameters.isConnected.get()) return;
-		local.send("leach "+targetMask+","+r1+","+g1+","+b1+","+r2+","+g2+","+b2);
+		sendMessage("leach "+targetMask+","+r1+","+g1+","+b1+","+r2+","+g2+","+b2);
 	}
 }
 
 function startShow(target, propID, startID, endID, showID, delay, startTime)
 {
 	var targetMask = getMaskForTarget(target, propId, startID, endID);
-	local.send("sstart "+targetMask+","+(showID-1)+", "+parseInt(delay*1000)+", "+parseInt(startTime*1000)); //this number is 2^32 - 1
+	sendMessage("sstart "+targetMask+","+(showID-1)+", "+parseInt(delay*1000)+", "+parseInt(startTime*1000)); //this number is 2^32 - 1
 }
 
 function stopShow(target, propID, startID, endID)
 {
 	var targetMask = getMaskForTarget(target, propId, startID, endID);
-	local.send("sstop "+targetMask);
+	sendMessage("sstop "+targetMask);
 }
 
 
@@ -252,7 +252,7 @@ function blackOut(target, propID, startID, endID)
 	{
 		if(!local.parameters.isConnected.get()) return;
 		var targetMask = getMaskForTarget(target, propId, startID, endID);
-		local.send("leach "+targetMask+",0,0,0,0,0,0");
+		sendMessage("leach "+targetMask+",0,0,0,0,0,0");
 	}
 	
 }
@@ -296,7 +296,7 @@ function gradient(startID, endID, color1, color2)
 		{
 			if(!local.parameters.isConnected.get()) return;
 			targetMask = 1 << i;
-			local.send("leach "+targetMask+","+r+","+g+","+b+","+r+","+g+","+b);
+			sendMessage("leach "+targetMask+","+r+","+g+","+b+","+r+","+g+","+b);
 		}
 	} 
 	
@@ -328,7 +328,7 @@ function point(startID, endID, position, size, fade, color)
 	{
 		if(!local.parameters.isConnected.get()) return;
 		targetMask = 1 << i;
-		local.send("leach "+targetMask+","+r+","+g+","+b+","+r+","+g+","+b);
+		sendMessage("leach "+targetMask+","+r+","+g+","+b+","+r+","+g+","+b);
 	}
 }
 
@@ -347,4 +347,10 @@ function getMaskForTarget(target, propID, startID, endID)
 	}
 
 	return 0;
+}
+
+
+function sendMessage(message)
+{
+	local.send(message+"\n");
 }

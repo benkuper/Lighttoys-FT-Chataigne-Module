@@ -15,6 +15,10 @@ for(var i=0;i<32;i++)
 	slaveCheckList[i] = false;
 }
 
+function init()
+{
+	script.setUpdateRate(20);
+}
 
 function update()
 {

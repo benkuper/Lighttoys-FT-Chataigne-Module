@@ -119,10 +119,10 @@ function dataReceived(data)
 		var dataSplit = data.split(";");
 		var pairingTarget = dataSplit[0].substring(6,dataSplit[0].length);
 
-		if(pairingTarget == "master")
+		if(pairingTarget == "master" || pairingTarget == "m")
 		{
 			local.values.connectedDevices.numPaired.set(parseInt(dataSplit[2].substring(5, dataSplit[2].length)));
-		}else if(pairingTarget == "slave") 
+		}else if(pairingTarget == "slave" || pairingTarget == "s") 
 		{
 			var propID = parseInt(dataSplit[1].substring(3,dataSplit[1].length));
 			var isOn = dataSplit[7].substring(8,9) == "+";

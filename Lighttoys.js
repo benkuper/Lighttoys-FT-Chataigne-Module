@@ -47,6 +47,8 @@ function update()
 
 function sendAllColors()
 {
+	if(isBlackoutMode()) return;
+
 	var numPaired = local.values.connectedDevices.numPaired.get();
 	var numConnected = local.values.connectedDevices.numConnected.get();
 
@@ -120,6 +122,9 @@ function moduleParameterChanged(param)
 	}else if(param.name == "enableEcho")
 	{
 		sendMessage("mecho "+(local.parameters.enableEcho.get()?"1":"0"));
+	}else if(param.name == "blackout")
+	{
+		sendMessage("gmute "+(isBlackoutMode()?1:0));
 	}
 }
 
@@ -195,9 +200,7 @@ function dataReceived(data)
 		updatingNames = true;
 		var dataSplit = data.substring(4,data.length).split(";");
 		var deviceID = dataSplit[0].substring(3, dataSplit[0].length);
-		script.log("> Device ID : "+deviceID);
 		var propID = getPropIDForDeviceID(deviceID);
-		script.log("> Prop ID "+propID);
 		var propName = dataSplit[6].substring(3, dataSplit[6].length);
 		local.parameters.deviceNames.getChild("device"+propID).set(propName);
 		updatingNames = false;
@@ -209,7 +212,7 @@ function dataReceived(data)
 function ping(target, propID, startID, endID)
 {
 	var targetMask = getMaskForTarget(target, propID, startID, endID);
-	sendMessage("lstop "+targetMask);
+	//sendMessage("lstop "+targetMask);
 	sendMessage("gping "+targetMask);
 }
 
@@ -292,21 +295,9 @@ function stopShow(target, propID, startID, endID)
 }
 
 
-function blackOut(target, propID, startID, endID)
+function blackOut(val)
 {
-	for(var i=0;i<31;i++) 
-	{
-		colors1[i] = [0,0,0];
-		colors2[i] = colors1[i];
-	}
-
-	if(!alwaysUpdate)
-	{
-		if(!local.parameters.isConnected.get()) return;
-		var targetMask = getMaskForTarget(target, propId, startID, endID);
-		sendMessage("leach "+targetMask+",0,0,0,0,0,0");
-	}
-	
+	local.parameters.blackout.set(val);
 }
 
 
@@ -387,8 +378,8 @@ function point(startID, endID, position, size, fade, color)
 //Helpers
 function getMaskForTarget(target, propID, startID, endID)
 {
-	if(target == "all") return 1099511627775;
-	else if(target == "one") return 1 << propID;
+	if(target == "all") return isGroupMode()?1099511627775:0;
+	else if(target == "one") return isGroupMode()?1 << propID:deviceIDs[propID];
 	else if(target == "range") 
 	{
 		var targetMask = 0;
@@ -412,12 +403,16 @@ function isGroupMode()
 	return local.parameters.mode.get() == "group";
 }
 
+function isBlackoutMode()
+{
+	return local.parameters.blackout.get();
+}
+
 
 function getPropIDForDeviceID(deviceID)
 {
 	for(var i=0;i<broadcastPairIndex;i++)
 	{
-		script.log("device ID " + deviceID + " <> "+deviceIDs[i]);
 		if(deviceIDs[i] == deviceID) return i;
 	}
 

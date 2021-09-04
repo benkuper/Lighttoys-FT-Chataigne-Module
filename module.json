@@ -18,7 +18,7 @@
 
 	"parameters":
 	{
-		"Mode":{"type":"Enum","options": { "Group":"group", "Broadcast":"broadcast"}},
+		"Mode":{"type":"Enum","options": { "Group":"group", "Broadcast":"broadcast"},"readOnly":true},
 		"Always Update":{"type":"Boolean", "description":"If checked, will always update using the update rate parameter", "default":true},
 		"Enable Echo": { "type":"Boolean", "description":"If checked, the remote will send echo of sent commands. Uncheck when sending a lot of data to optimize bandwidth.", "default":false },
 		"Ping All": { "type":"Trigger" },
@@ -29,6 +29,8 @@
 		"Add to existing (Broadcast)": { "type":"Trigger" ,"shortName":"pairAddBroadcast"},
 		"Finish pairing": { "type":"Trigger" },
 		"Is Pairing":{"type":"Boolean", "readOnly":true},
+		"Blackout":{"type":"Boolean"},
+
 		"Device Names":
 		{
 			"type":"Container",
@@ -461,59 +463,11 @@
 			"callback":"blackOut",
 			"parameters":
 			{
-				"Target":
+				"Enable":
 				{
-					"type":"Enum",
-					"options":
-					{
-						"All":"all",
-						"One":"one",
-						"Range":"range"
-					}
+					"type":"Boolean",
+					"default":true
 				},
-
-				"ID":
-				{
-					"type":"Integer",
-					"min":0,
-					"max":31,
-					"dependency": 
-					{
-						"source":"target",
-						"value":"one",
-						"check":"equals",
-						"action":"show"
-					}
-				},
-
-				"Start ID":
-				{
-					"type":"Integer",
-					"min":0,
-					"max":31,
-					"dependency": 
-					{
-						"source":"target",
-						"value":"range",
-						"check":"equals",
-						"action":"show"
-					}
-				},
-				
-				"End ID":
-				{
-					"type":"Integer",
-					"default":9,
-					"min":0,
-					"max":31,
-					"dependency": 
-					{
-						"source":"target",
-						"value":"range",
-						"check":"equals",
-						"action":"show"
-					}
-				}
 			}
 		},
 

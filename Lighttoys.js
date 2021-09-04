@@ -1,5 +1,6 @@
 var slaveCheckList = [];
-var pairingMode = false;
+var deviceIDs = [];
+var pairingMode = local.parameters.isPairing;
 var colors1 = [];
 var colors2 = [];
 
@@ -7,6 +8,8 @@ var alwaysUpdate = local.parameters.alwaysUpdate.get();
 var lastUpdateTime = 0;
 
 var updatingNames;
+
+var broadcastPairIndex = 0;
 
 for(var i=0;i<32;i++) 
 {
@@ -24,7 +27,7 @@ function update()
 {
 	if(!local.parameters.isConnected.get()) return;
 	
-	if(!pairingMode)
+	if(!pairingMode.get())
 	{
 		var time = util.getTime();
 
@@ -71,19 +74,28 @@ function moduleParameterChanged(param)
 	}else if(param.name == "blackOut")
 	{
 		blackOut("all",0,0,0);
-	}else if(param.name == "addNewPairingGroup")
+	}else if(param.name == "pairNew_Group_")
 	{
-		pairingMode = true;
-		sendMessage("gadd 1");
+		pairingMode.set(true);
+		sendMessage("gadd g1");
 		script.log("Start new pairing group");
-	}else if(param.name == "addToGroup")
+	}else if(param.name == "addToExisting_Group_")
 	{
-		pairingMode = true;
-		sendMessage("gadd 0");
+		pairingMode.set(true);
+		sendMessage("gadd g0");
 		script.log("Pair new devices to the group");
+	}else if(param.name == "pairNew_Broadcast_")
+	{
+		pairingMode.set(true);
+		sendMessage("gadd b1");
+		script.log("Start new pairing group");
+	}else if(param.name == "addToExisting_Broadcast_")
+	{
+		pairingMode.set(true);
+		sendMessage("gadd b0");
 	}else if(param.name == "finishPairing")
 	{
-		pairingMode = false;
+		pairingMode.set(false);
 		sendMessage("gstop");
 		script.log("Finish pairing");
 	}else if(param.name == "alwaysUpdate")
@@ -121,17 +133,35 @@ function dataReceived(data)
 
 		if(pairingTarget == "master" || pairingTarget == "m")
 		{
-			local.values.connectedDevices.numPaired.set(parseInt(dataSplit[2].substring(5, dataSplit[2].length)));
+			var groupMode = dataSplit[dataSplit.length-1].substring(2,3) == "G";
+			local.parameters.mode.set(groupMode?"Group":"Broadcast");
+
+			if(isGroupMode) local.values.connectedDevices.numPaired.set(parseInt(dataSplit[2].substring(5, dataSplit[2].length)));
+			broadcastPairIndex = 0;
 		}else if(pairingTarget == "slave" || pairingTarget == "s") 
 		{
-			var propID = parseInt(dataSplit[1].substring(3,dataSplit[1].length));
-			var isOn = dataSplit[7].substring(8,9) == "+";
-			var voltageString = dataSplit[5];
-			var voltage = parseInt(voltageString.substring(4,voltageString.length)) / 0x10000;
-			slaveCheckList[propID] = isOn;
-			local.values.connectedDevices.getChild("device"+propID).set(isOn?voltage:0);
+			if(isGroupMode())
+			{
+				var propID = parseInt(dataSplit[1].substring(3,dataSplit[1].length));
+				var deviceID = dataSplit[2].substring(3, dataSplit[2].length);
+				var isOn = dataSplit[8].substring(8,9) == "+";
+				var voltageString = dataSplit[5];
+				var voltage = parseInt(voltageString.substring(4,voltageString.length)) / 0x10000;
+				slaveCheckList[propID] = isOn;
+				deviceIDs[propID] = deviceID;
+				local.values.connectedDevices.getChild("device"+propID).set(isOn?voltage:0);
 			
-			sendMessage("gname "+getMaskForTarget("one",propID,0,0));
+				sendMessage("gname "+getMaskForTarget("one",propID,0,0));
+			}else //broadcast mode
+			{
+				var propID = broadcastPairIndex;
+				broadcastPairIndex++;
+				var deviceID = dataSplit[1].substring(3, dataSplit[1].length);
+				deviceIDs[propID] = deviceID;
+				local.values.connectedDevices.numPaired.set(broadcastPairIndex);
+				sendMessage("ginfo "+deviceID);//getMaskForTarget("one",propID,0,0));
+			}
+			
 
 			if(propID == local.values.connectedDevices.numPaired.get()-1)
 			{
@@ -160,6 +190,17 @@ function dataReceived(data)
 		local.parameters.deviceNames.getChild("device"+propID).set(propName);
 		updatingNames = false;
 
+	}else if(data.substring(0,3) == "INF")
+	{
+		updatingNames = true;
+		var dataSplit = data.substring(4,data.length).split(";");
+		var deviceID = dataSplit[0].substring(3, dataSplit[0].length);
+		script.log("> Device ID : "+deviceID);
+		var propID = getPropIDForDeviceID(deviceID);
+		script.log("> Prop ID "+propID);
+		var propName = dataSplit[6].substring(3, dataSplit[6].length);
+		local.parameters.deviceNames.getChild("device"+propID).set(propName);
+		updatingNames = false;
 	}
 }
 
@@ -177,17 +218,17 @@ function color(target, propID, startID, endID, mode, color1, color2)
 	var targetMask = getMaskForTarget(target, propID, startID, endID);
 
 	//Invert b and r because of inversion in the remote firmware 
-	var r1 = parseInt(color1[2]*255);
+	var r1 = parseInt(color1[0]*255);
 	var g1 = parseInt(color1[1]*255);
-	var b1 = parseInt(color1[0]*255);
+	var b1 = parseInt(color1[2]*255);
 
 	var r2=r1, g2=g1, b2=b1;
 
 	if(mode == "ab")
 	{
-		r2 = parseInt(color2[2]*255);
+		r2 = parseInt(color2[0]*255);
 		g2 = parseInt(color2[1]*255);
-		b2 = parseInt(color2[0]*255);
+		b2 = parseInt(color2[2]*255);
 	}else if(mode == "a")
 	{
 		//r1 = r2; g1 = g2; b1 = b2;
@@ -231,10 +272,17 @@ function color(target, propID, startID, endID, mode, color1, color2)
 	}
 }
 
-function startShow(target, propID, startID, endID, showID, delay, startTime)
+function startShow(target, propID, startID, endID, showID, delay, startTime, duration, brightness)
 {
 	var targetMask = getMaskForTarget(target, propId, startID, endID);
-	sendMessage("sstart "+targetMask+","+(showID-1)+", "+parseInt(delay*1000)+", "+parseInt(startTime*1000)); //this number is 2^32 - 1
+	var playCmd = "splay "+targetMask+","+(showID-1);
+	if(delay > 0) playCmd += ",h"+parseInt(delay*1000);
+	if(startTime > 0)  playCmd += ",o"+parseInt(startTime*1000);
+
+	if(duration > 0) playCmd += ", d"+parseInt(duration*1000);
+	playCmd += ",b"+parseInt(brightness);
+
+	sendMessage(playCmd); //this number is 2^32 - 1
 }
 
 function stopShow(target, propID, startID, endID)
@@ -273,13 +321,13 @@ function gradient(startID, endID, color1, color2)
 	}
 
 	//Invert b and r because of inversion in the remote firmware 
-	var b1 = color1[0];
+	var r1 = color1[0];
 	var g1 = color1[1];
-	var r1 = color1[2];
+	var b1 = color1[2];
 
-	var b2 = color2[0];
+	var r2 = color2[0];
 	var g2 = color2[1];
-	var r2 = color2[2];
+	var b2 = color2[2];
 
 	var targetMask = 0;
 	var minID = Math.min(startID, endID);
@@ -308,9 +356,9 @@ function gradient(startID, endID, color1, color2)
 
 function point(startID, endID, position, size, fade, color)
 {
-	var b = color[0];
+	var r = color[0];
 	var g = color[1];
-	var r = color[2];
+	var b = color[2];
 
 	for(var i=startID;i<=endID;i++)
 	{
@@ -357,4 +405,21 @@ function getMaskForTarget(target, propID, startID, endID)
 function sendMessage(message)
 {
 	local.send(message+"\n");
+}
+
+function isGroupMode()
+{
+	return local.parameters.mode.get() == "group";
+}
+
+
+function getPropIDForDeviceID(deviceID)
+{
+	for(var i=0;i<broadcastPairIndex;i++)
+	{
+		script.log("device ID " + deviceID + " <> "+deviceIDs[i]);
+		if(deviceIDs[i] == deviceID) return i;
+	}
+
+	return -1;
 }

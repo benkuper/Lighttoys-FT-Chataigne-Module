@@ -1,823 +1,1110 @@
 {
-	"name":"Lighttoys FT",
-	"type":"Serial",
-	"path":"Lighttoys",
-	
-	"version":"1.0.8",
-	"description":"Control Lighttoys FT devices using the FT Remote and this module !",
-	"url":"https://github.com/benkuper/Lighttoys-FT-Chataigne-Module",
-	"downloadURL":"https://github.com/benkuper/Lighttoys-FT-Chataigne-Module/archive/master.zip",
-	
-	"hasInput":true,
-	"hasOutput":true, 
-
-	"hideDefaultCommands":true,
-
-	"vidFilter": ["0x04D8", "0x1a86", "0x04b4"],
-
-	"pidFilter": ["0x00df", "0x7523", "0x0102"],
-
-	"parameters":
-	{
-		"Always Update":{"type":"Boolean", "description":"If checked, will always update using the update rate parameter", "default":false},
-		"Enable Echo": { "type":"Boolean", "description":"If checked, the remote will send echo of sent commands. Uncheck when sending a lot of data to optimize bandwidth.", "default":false },
-		"Mode":{"type":"Enum","options": { "Group":"group", "Broadcast":"broadcast"},"readOnly":true},
-		"Is Pairing":{"type":"Boolean", "readOnly":true},
-		"Pair New (Group)": { "type":"Trigger","shortName":"pairNew_Group_"},
-		"Add to existing (Group)": { "type":"Trigger","shortName":"addToExisting_Group_" },
-		"Pair New (Broadcast)": { "type":"Trigger","shortName":"pairNew_Broadcast_" },
-		"Add to existing (Broadcast)": { "type":"Trigger" ,"shortName":"addToExisting_Broadcast_"},
-		"Finish pairing": { "type":"Trigger" },
-		"Blackout":{"type":"Boolean"},
-		"Black Out": { "type": "Trigger" },
-		"Ping All": { "type":"Trigger" },
-		
-
-		"Device Names":
-		{
-			"type":"Container",
-			"collapsed":true,
-
-			"Device 0":  { "type":"String"},
-			"Device 1":  { "type":"String"},
-			"Device 2":  { "type":"String"},
-			"Device 3":  { "type":"String"},
-			"Device 4":  { "type":"String"},
-			"Device 5":  { "type":"String"},
-			"Device 6":  { "type":"String"},
-			"Device 7":  { "type":"String"},
-			"Device 8":  { "type":"String"},
-			"Device 9":  { "type":"String"},
-			"Device 10": { "type":"String"},
-			"Device 11": { "type":"String"},
-			"Device 12": { "type":"String"},
-			"Device 13": { "type":"String"},
-			"Device 14": { "type":"String"},
-			"Device 15": { "type":"String"},
-			"Device 16": { "type":"String"},
-			"Device 17": { "type":"String"},
-			"Device 18": { "type":"String"},
-			"Device 19": { "type":"String"},
-			"Device 20": { "type":"String"},
-			"Device 21": { "type":"String"},
-			"Device 22": { "type":"String"},
-			"Device 23": { "type":"String"},
-			"Device 24": { "type":"String"},
-			"Device 25": { "type":"String"},
-			"Device 26": { "type":"String"},
-			"Device 27": { "type":"String"},
-			"Device 28": { "type":"String"},
-			"Device 29": { "type":"String"},
-			"Device 30": { "type":"String"},
-			"Device 31": { "type":"String"}
+	"name": "Lighttoys FT",
+	"type": "Serial",
+	"path": "Lighttoys",
+	"version": "1.1.0",
+	"description": "Control Lighttoys FT devices using the FT Remote and this module !",
+	"url": "https://github.com/benkuper/Lighttoys-FT-Chataigne-Module",
+	"downloadURL": "https://github.com/benkuper/Lighttoys-FT-Chataigne-Module/archive/master.zip",
+	"hasInput": true,
+	"hasOutput": true,
+	"hideDefaultCommands": true,
+	"vidFilter": [
+		"0x04D8",
+		"0x1a86",
+		"0x04b4",
+		"0x1669"
+	],
+	"pidFilter": [
+		"0x00df",
+		"0x7523",
+		"0x0102",
+		"0x1026"
+	],
+	"parameters": {
+		"Communication": {
+			"type": "Container",
+			"Always Update": {
+				"type": "Boolean",
+				"description": "If checked, will always update using the update rate parameter",
+				"default": false
+			},
+			"Enable Echo": {
+				"type": "Boolean",
+				"description": "If checked, the remote will send echo of sent commands. Uncheck when sending a lot of data to optimize bandwidth.",
+				"default": false
+			}
+		},
+		"Pairing": {
+			"type": "Container",
+			"Mode": {
+				"type": "Enum",
+				"options": {
+					"Group": "group",
+					"Broadcast": "broadcast"
+				},
+				"readOnly": true
+			},
+			"Is Pairing": {
+				"type": "Boolean",
+				"readOnly": true
+			},
+			"Pair New (Broadcast)": {
+				"type": "Trigger",
+				"shortName": "pairNew_Broadcast_"
+			},
+			"Add to existing (Broadcast)": {
+				"type": "Trigger",
+				"shortName": "addToExisting_Broadcast_"
+			},
+			"Finish pairing": {
+				"type": "Trigger"
+			}
+		},
+		"Controls": {
+			"type": "Container",
+			"Is Blackout": {
+				"type": "Boolean"
+			},
+			"Black Out": {
+				"type": "Trigger"
+			},
+			"Ping All": {
+				"type": "Trigger"
+			},
+			"Shutdown All": {
+				"type": "Trigger"
+			}
+		},
+		"Device Names": {
+			"type": "Container",
+			"collapsed": true,
+			"Device 0": {
+				"type": "String"
+			},
+			"Device 1": {
+				"type": "String"
+			},
+			"Device 2": {
+				"type": "String"
+			},
+			"Device 3": {
+				"type": "String"
+			},
+			"Device 4": {
+				"type": "String"
+			},
+			"Device 5": {
+				"type": "String"
+			},
+			"Device 6": {
+				"type": "String"
+			},
+			"Device 7": {
+				"type": "String"
+			},
+			"Device 8": {
+				"type": "String"
+			},
+			"Device 9": {
+				"type": "String"
+			},
+			"Device 10": {
+				"type": "String"
+			},
+			"Device 11": {
+				"type": "String"
+			},
+			"Device 12": {
+				"type": "String"
+			},
+			"Device 13": {
+				"type": "String"
+			},
+			"Device 14": {
+				"type": "String"
+			},
+			"Device 15": {
+				"type": "String"
+			},
+			"Device 16": {
+				"type": "String"
+			},
+			"Device 17": {
+				"type": "String"
+			},
+			"Device 18": {
+				"type": "String"
+			},
+			"Device 19": {
+				"type": "String"
+			},
+			"Device 20": {
+				"type": "String"
+			},
+			"Device 21": {
+				"type": "String"
+			},
+			"Device 22": {
+				"type": "String"
+			},
+			"Device 23": {
+				"type": "String"
+			},
+			"Device 24": {
+				"type": "String"
+			},
+			"Device 25": {
+				"type": "String"
+			},
+			"Device 26": {
+				"type": "String"
+			},
+			"Device 27": {
+				"type": "String"
+			},
+			"Device 28": {
+				"type": "String"
+			},
+			"Device 29": {
+				"type": "String"
+			},
+			"Device 30": {
+				"type": "String"
+			},
+			"Device 31": {
+				"type": "String"
+			}
+		},
+		"Device Models": {
+			"type": "Container",
+			"collapsed": true,
+			"Device 0": {
+				"type": "String"
+			},
+			"Device 1": {
+				"type": "String"
+			},
+			"Device 2": {
+				"type": "String"
+			},
+			"Device 3": {
+				"type": "String"
+			},
+			"Device 4": {
+				"type": "String"
+			},
+			"Device 5": {
+				"type": "String"
+			},
+			"Device 6": {
+				"type": "String"
+			},
+			"Device 7": {
+				"type": "String"
+			},
+			"Device 8": {
+				"type": "String"
+			},
+			"Device 9": {
+				"type": "String"
+			},
+			"Device 10": {
+				"type": "String"
+			},
+			"Device 11": {
+				"type": "String"
+			},
+			"Device 12": {
+				"type": "String"
+			},
+			"Device 13": {
+				"type": "String"
+			},
+			"Device 14": {
+				"type": "String"
+			},
+			"Device 15": {
+				"type": "String"
+			},
+			"Device 16": {
+				"type": "String"
+			},
+			"Device 17": {
+				"type": "String"
+			},
+			"Device 18": {
+				"type": "String"
+			},
+			"Device 19": {
+				"type": "String"
+			},
+			"Device 20": {
+				"type": "String"
+			},
+			"Device 21": {
+				"type": "String"
+			},
+			"Device 22": {
+				"type": "String"
+			},
+			"Device 23": {
+				"type": "String"
+			},
+			"Device 24": {
+				"type": "String"
+			},
+			"Device 25": {
+				"type": "String"
+			},
+			"Device 26": {
+				"type": "String"
+			},
+			"Device 27": {
+				"type": "String"
+			},
+			"Device 28": {
+				"type": "String"
+			},
+			"Device 29": {
+				"type": "String"
+			},
+			"Device 30": {
+				"type": "String"
+			},
+			"Device 31": {
+				"type": "String"
+			}
 		}
 	},
-
-	"defaults":
-	{		
-		"baudRate":115200,
-		"autoAdd":false,
+	"defaults": {
+		"baudRate": 115200,
+		"autoAdd": false,
 	},
-
-	"hideDefaultParameters":
-	[
+	"hideDefaultParameters": [
 		"protocol",
 		"autoAdd",
 		"splitArguments",
 		"messageStructure",
 		"firstValueIsTheName",
 		"baudRate",
-
-		"pass_through",
+		"pass_through"
 	],
-
-
-	"scripts":
-	[
+	"scripts": [
 		"Lighttoys.js"
 	],
-
-	"values":
-	{
-		"Connected Devices":
-		{
-			"type":"Container",
-
-			"Num Paired":{"type":"Integer", "readOnly":true},
-			"Num Connected":{"type":"Integer", "readOnly":true},
-			"Device 0":  { "type":"Float", "min":0,"max":15, "readOnly":true},
-			"Device 1":  { "type":"Float", "min":0,"max":15, "readOnly":true},
-			"Device 2":  { "type":"Float", "min":0,"max":15, "readOnly":true},
-			"Device 3":  { "type":"Float", "min":0,"max":15, "readOnly":true},
-			"Device 4":  { "type":"Float", "min":0,"max":15, "readOnly":true},
-			"Device 5":  { "type":"Float", "min":0,"max":15, "readOnly":true},
-			"Device 6":  { "type":"Float", "min":0,"max":15, "readOnly":true},
-			"Device 7":  { "type":"Float", "min":0,"max":15, "readOnly":true},
-			"Device 8":  { "type":"Float", "min":0,"max":15, "readOnly":true},
-			"Device 9":  { "type":"Float", "min":0,"max":15, "readOnly":true},
-			"Device 10": { "type":"Float", "min":0,"max":15, "readOnly":true},
-			"Device 11": { "type":"Float", "min":0,"max":15, "readOnly":true},
-			"Device 12": { "type":"Float", "min":0,"max":15, "readOnly":true},
-			"Device 13": { "type":"Float", "min":0,"max":15, "readOnly":true},
-			"Device 14": { "type":"Float", "min":0,"max":15, "readOnly":true},
-			"Device 15": { "type":"Float", "min":0,"max":15, "readOnly":true},
-			"Device 16": { "type":"Float", "min":0,"max":15, "readOnly":true},
-			"Device 17": { "type":"Float", "min":0,"max":15, "readOnly":true},
-			"Device 18": { "type":"Float", "min":0,"max":15, "readOnly":true},
-			"Device 19": { "type":"Float", "min":0,"max":15, "readOnly":true},
-			"Device 20": { "type":"Float", "min":0,"max":15, "readOnly":true},
-			"Device 21": { "type":"Float", "min":0,"max":15, "readOnly":true},
-			"Device 22": { "type":"Float", "min":0,"max":15, "readOnly":true},
-			"Device 23": { "type":"Float", "min":0,"max":15, "readOnly":true},
-			"Device 24": { "type":"Float", "min":0,"max":15, "readOnly":true},
-			"Device 25": { "type":"Float", "min":0,"max":15, "readOnly":true},
-			"Device 26": { "type":"Float", "min":0,"max":15, "readOnly":true},
-			"Device 27": { "type":"Float", "min":0,"max":15, "readOnly":true},
-			"Device 28": { "type":"Float", "min":0,"max":15, "readOnly":true},
-			"Device 29": { "type":"Float", "min":0,"max":15, "readOnly":true},
-			"Device 30": { "type":"Float", "min":0,"max":15, "readOnly":true},
-			"Device 31": { "type":"Float", "min":0,"max":15, "readOnly":true}
+	"values": {
+		"Connected Devices": {
+			"type": "Container",
+			"Num Paired": {
+				"type": "Integer",
+				"readOnly": true
+			},
+			"Num Connected": {
+				"type": "Integer",
+				"readOnly": true
+			},
+			"Device 0": {
+				"type": "Float",
+				"min": 0,
+				"max": 15,
+				"readOnly": true
+			},
+			"Device 1": {
+				"type": "Float",
+				"min": 0,
+				"max": 15,
+				"readOnly": true
+			},
+			"Device 2": {
+				"type": "Float",
+				"min": 0,
+				"max": 15,
+				"readOnly": true
+			},
+			"Device 3": {
+				"type": "Float",
+				"min": 0,
+				"max": 15,
+				"readOnly": true
+			},
+			"Device 4": {
+				"type": "Float",
+				"min": 0,
+				"max": 15,
+				"readOnly": true
+			},
+			"Device 5": {
+				"type": "Float",
+				"min": 0,
+				"max": 15,
+				"readOnly": true
+			},
+			"Device 6": {
+				"type": "Float",
+				"min": 0,
+				"max": 15,
+				"readOnly": true
+			},
+			"Device 7": {
+				"type": "Float",
+				"min": 0,
+				"max": 15,
+				"readOnly": true
+			},
+			"Device 8": {
+				"type": "Float",
+				"min": 0,
+				"max": 15,
+				"readOnly": true
+			},
+			"Device 9": {
+				"type": "Float",
+				"min": 0,
+				"max": 15,
+				"readOnly": true
+			},
+			"Device 10": {
+				"type": "Float",
+				"min": 0,
+				"max": 15,
+				"readOnly": true
+			},
+			"Device 11": {
+				"type": "Float",
+				"min": 0,
+				"max": 15,
+				"readOnly": true
+			},
+			"Device 12": {
+				"type": "Float",
+				"min": 0,
+				"max": 15,
+				"readOnly": true
+			},
+			"Device 13": {
+				"type": "Float",
+				"min": 0,
+				"max": 15,
+				"readOnly": true
+			},
+			"Device 14": {
+				"type": "Float",
+				"min": 0,
+				"max": 15,
+				"readOnly": true
+			},
+			"Device 15": {
+				"type": "Float",
+				"min": 0,
+				"max": 15,
+				"readOnly": true
+			},
+			"Device 16": {
+				"type": "Float",
+				"min": 0,
+				"max": 15,
+				"readOnly": true
+			},
+			"Device 17": {
+				"type": "Float",
+				"min": 0,
+				"max": 15,
+				"readOnly": true
+			},
+			"Device 18": {
+				"type": "Float",
+				"min": 0,
+				"max": 15,
+				"readOnly": true
+			},
+			"Device 19": {
+				"type": "Float",
+				"min": 0,
+				"max": 15,
+				"readOnly": true
+			},
+			"Device 20": {
+				"type": "Float",
+				"min": 0,
+				"max": 15,
+				"readOnly": true
+			},
+			"Device 21": {
+				"type": "Float",
+				"min": 0,
+				"max": 15,
+				"readOnly": true
+			},
+			"Device 22": {
+				"type": "Float",
+				"min": 0,
+				"max": 15,
+				"readOnly": true
+			},
+			"Device 23": {
+				"type": "Float",
+				"min": 0,
+				"max": 15,
+				"readOnly": true
+			},
+			"Device 24": {
+				"type": "Float",
+				"min": 0,
+				"max": 15,
+				"readOnly": true
+			},
+			"Device 25": {
+				"type": "Float",
+				"min": 0,
+				"max": 15,
+				"readOnly": true
+			},
+			"Device 26": {
+				"type": "Float",
+				"min": 0,
+				"max": 15,
+				"readOnly": true
+			},
+			"Device 27": {
+				"type": "Float",
+				"min": 0,
+				"max": 15,
+				"readOnly": true
+			},
+			"Device 28": {
+				"type": "Float",
+				"min": 0,
+				"max": 15,
+				"readOnly": true
+			},
+			"Device 29": {
+				"type": "Float",
+				"min": 0,
+				"max": 15,
+				"readOnly": true
+			},
+			"Device 30": {
+				"type": "Float",
+				"min": 0,
+				"max": 15,
+				"readOnly": true
+			},
+			"Device 31": {
+				"type": "Float",
+				"min": 0,
+				"max": 15,
+				"readOnly": true
+			}
 		}
 	},
-
-	"commands":
-	{
-		"Ping":
-		{
-			"menu":"",
-			"callback":"ping",
-			"parameters":
-			{
-				"Target":
-				{
-					"type":"Enum",
-					"options":
-					{
-						"All":"all",
-						"One":"one",
-						"Range":"range"
+	"commands": {
+		"Ping": {
+			"menu": "",
+			"callback": "ping",
+			"parameters": {
+				"Target": {
+					"type": "Enum",
+					"options": {
+						"All": "all",
+						"One": "one",
+						"Range": "range",
+						"Name Pattern": "name"
 					}
 				},
-
-				"ID":
-				{
-					"type":"Integer",
-					"min":0,
-					"max":31,
-					"dependency": 
-					{
-						"source":"target",
-						"value":"one",
-						"check":"equals",
-						"action":"show"
+				"ID": {
+					"type": "Integer",
+					"min": 0,
+					"max": 31,
+					"dependency": {
+						"source": "target",
+						"value": "one",
+						"check": "equals",
+						"action": "show"
 					}
 				},
-
-				"Start ID":
-				{
-					"type":"Integer",
-					"min":0,
-					"max":31,
-					"dependency": 
-					{
-						"source":"target",
-						"value":"range",
-						"check":"equals",
-						"action":"show"
+				"Start ID": {
+					"type": "Integer",
+					"min": 0,
+					"max": 31,
+					"dependency": {
+						"source": "target",
+						"value": "range",
+						"check": "equals",
+						"action": "show"
 					}
 				},
-				
-				"End ID":
-				{
-					"type":"Integer",
-					"default":9,
-					"min":0,
-					"max":31,
-					"dependency": 
-					{
-						"source":"target",
-						"value":"range",
-						"check":"equals",
-						"action":"show"
+				"End ID": {
+					"type": "Integer",
+					"default": 9,
+					"min": 0,
+					"max": 31,
+					"dependency": {
+						"source": "target",
+						"value": "range",
+						"check": "equals",
+						"action": "show"
+					}
+				},
+				"Name Pattern": {
+					"type": "String",
+					"value": "VP*",
+					"dependency": {
+						"source": "target",
+						"value": "name",
+						"check": "equals",
+						"action": "show"
 					}
 				}
 			}
 		},
-
-
-		"Color":
-		{
-			"menu":"",
-			"callback":"color",
-			"parameters":
-			{
-				"Target":
-				{
-					"type":"Enum",
-					"options":
-					{
-						"All":"all",
-						"One":"one",
-						"Range":"range"
+		"Color": {
+			"menu": "",
+			"callback": "color",
+			"parameters": {
+				"Target": {
+					"type": "Enum",
+					"options": {
+						"All": "all",
+						"One": "one",
+						"Range": "range",
+						"Name Pattern": "name"
 					}
 				},
-
-				"ID":
-				{
-					"type":"Integer",
-					"min":0,
-					"max":31,
-					"dependency": 
-					{
-						"source":"target",
-						"value":"one",
-						"check":"equals",
-						"action":"show"
+				"ID": {
+					"type": "Integer",
+					"min": 0,
+					"max": 31,
+					"dependency": {
+						"source": "target",
+						"value": "one",
+						"check": "equals",
+						"action": "show"
 					}
 				},
-
-				"Start ID":
-				{
-					"type":"Integer",
-					"min":0,
-					"max":31,
-					"dependency": 
-					{
-						"source":"target",
-						"value":"range",
-						"check":"equals",
-						"action":"show"
+				"Start ID": {
+					"type": "Integer",
+					"min": 0,
+					"max": 31,
+					"dependency": {
+						"source": "target",
+						"value": "range",
+						"check": "equals",
+						"action": "show"
 					}
 				},
-				
-				"End ID":
-				{
-					"type":"Integer",
-					"default":9,
-					"min":0,
-					"max":31,
-					"dependency": 
-					{
-						"source":"target",
-						"value":"range",
-						"check":"equals",
-						"action":"show"
+				"End ID": {
+					"type": "Integer",
+					"default": 9,
+					"min": 0,
+					"max": 31,
+					"dependency": {
+						"source": "target",
+						"value": "range",
+						"check": "equals",
+						"action": "show"
 					}
 				},
-
-				"Mode":
-				{
-					"type":"Enum",
-					"options":
-					{
-						"Full":"full",
-						"AB":"ab",
-						"A":"a",
-						"B":"b"
+				"Name Pattern": {
+					"type": "String",
+					"value": "VP*",
+					"dependency": {
+						"source": "target",
+						"value": "name",
+						"check": "equals",
+						"action": "show"
 					}
 				},
-
-				"Color A":
-				{
-					"type":"Color",
-					"default":[1,0,0,1]
-				},
-
-				"Color B":
-				{
-					"type":"Color",
-					"default":[0,1,0,1],
-					"dependency": 
-					{
-						"source":"mode",
-						"value":"ab",
-						"check":"equals",
-						"action":"show"
-					}
-				}
-				
-			}
-		},
-
-
-		"Start Show":
-		{
-			"menu":"",
-			"callback":"startShow",
-			"parameters":
-			{
-				"Target":
-				{
-					"type":"Enum",
-					"options":
-					{
-						"All":"all",
-						"One":"one",
-						"Range":"range"
+				"Mode": {
+					"type": "Enum",
+					"options": {
+						"Full": "full",
+						"AB": "ab",
+						"A": "a",
+						"B": "b"
 					}
 				},
-
-				"ID":
-				{
-					"type":"Integer",
-					"min":0,
-					"max":31,
-					"dependency": 
-					{
-						"source":"target",
-						"value":"one",
-						"check":"equals",
-						"action":"show"
-					}
+				"Color A": {
+					"type": "Color",
+					"default": [
+						1,
+						0,
+						0,
+						1
+					]
 				},
-
-				"Start ID":
-				{
-					"type":"Integer",
-					"min":0,
-					"max":31,
-					"dependency": 
-					{
-						"source":"target",
-						"value":"range",
-						"check":"equals",
-						"action":"show"
-					}
-				},
-				
-				"End ID":
-				{
-					"type":"Integer",
-					"default":9,
-					"min":0,
-					"max":31,
-					"dependency": 
-					{
-						"source":"target",
-						"value":"range",
-						"check":"equals",
-						"action":"show"
-					}
-				},
-
-				"Show Number":
-				{
-					"type":"Integer",
-					"default":1,
-					"min":1,
-					"max":4
-				},
-
-				"Delay":
-				{
-					"type":"Float",
-					"ui":"time"					
-				},
-
-				"Start Time":
-				{
-					"type":"Float",
-					"ui":"time"
-				},
-				"Duration":
-				{
-					"type":"Float",
-					"min":0,
-					"default":0,
-					"ui":"time"
-				},
-				"Brightness":
-				{
-					"type":"Integer",
-					"default":6,
-					"min":1,
-					"max":6,
-
-				}
-
-			}
-		},
-
-		"Stop Show":
-		{
-			"menu":"",
-			"callback":"stopShow",
-			"parameters":
-			{
-				"Target":
-				{
-					"type":"Enum",
-					"options":
-					{
-						"All":"all",
-						"One":"one",
-						"Range":"range"
-					}
-				},
-
-				"ID":
-				{
-					"type":"Integer",
-					"min":0,
-					"max":31,
-					"dependency": 
-					{
-						"source":"target",
-						"value":"one",
-						"check":"equals",
-						"action":"show"
-					}
-				},
-
-				"Start ID":
-				{
-					"type":"Integer",
-					"min":0,
-					"max":31,
-					"dependency": 
-					{
-						"source":"target",
-						"value":"range",
-						"check":"equals",
-						"action":"show"
-					}
-				},
-				
-				"End ID":
-				{
-					"type":"Integer",
-					"default":9,
-					"min":0,
-					"max":31,
-					"dependency": 
-					{
-						"source":"target",
-						"value":"range",
-						"check":"equals",
-						"action":"show"
+				"Color B": {
+					"type": "Color",
+					"default": [
+						0,
+						1,
+						0,
+						1
+					],
+					"dependency": {
+						"source": "mode",
+						"value": "ab",
+						"check": "equals",
+						"action": "show"
 					}
 				}
 			}
 		},
-
-		"Set Brighteness":
-		{
-			"menu":"",
-			"callback":"brightness",
-			"parameters":
-			{
-				"Level":
-				{
-					"type":"Integer",
-					"min":1,
-					"max":6, 
+		"Start Show": {
+			"menu": "",
+			"callback": "startShow",
+			"parameters": {
+				"Target": {
+					"type": "Enum",
+					"options": {
+						"All": "all",
+						"One": "one",
+						"Range": "range",
+						"Name Pattern": "name"
+					}
 				},
+				"ID": {
+					"type": "Integer",
+					"min": 0,
+					"max": 31,
+					"dependency": {
+						"source": "target",
+						"value": "one",
+						"check": "equals",
+						"action": "show"
+					}
+				},
+				"Start ID": {
+					"type": "Integer",
+					"min": 0,
+					"max": 31,
+					"dependency": {
+						"source": "target",
+						"value": "range",
+						"check": "equals",
+						"action": "show"
+					}
+				},
+				"End ID": {
+					"type": "Integer",
+					"default": 9,
+					"min": 0,
+					"max": 31,
+					"dependency": {
+						"source": "target",
+						"value": "range",
+						"check": "equals",
+						"action": "show"
+					}
+				},
+				"Name Pattern": {
+					"type": "String",
+					"value": "VP*",
+					"dependency": {
+						"source": "target",
+						"value": "name",
+						"check": "equals",
+						"action": "show"
+					}
+				},
+				"Show Number": {
+					"type": "Integer",
+					"default": 1,
+					"min": 1,
+					"max": 4
+				},
+				"Delay": {
+					"type": "Float",
+					"ui": "time"
+				},
+				"Start Time": {
+					"type": "Float",
+					"ui": "time"
+				},
+				"Duration": {
+					"type": "Float",
+					"min": 0,
+					"default": 0,
+					"ui": "time"
+				},
+				"Brightness": {
+					"type": "Integer",
+					"default": 6,
+					"min": 1,
+					"max": 6,
+				}
 			}
 		},
-
-		"Black Out":
-		{
-			"menu":"",
-			"callback":"blackOut",
-			"parameters":
-			{
-				"Enable":
-				{
-					"type":"Boolean",
-					"default":true
-				},
-			}
-		},
-
-		"Program":
-		{
-			"menu":"Advanced",
-			"callback":"lprog",
-			"parameters":
-			{
-				"Target":
-				{
-					"type":"Enum",
-					"options":
-					{
-						"All":"all",
-						"One":"one",
-						"Range":"range"
+		"Stop Show": {
+			"menu": "",
+			"callback": "stopShow",
+			"parameters": {
+				"Target": {
+					"type": "Enum",
+					"options": {
+						"All": "all",
+						"One": "one",
+						"Range": "range",
+						"Name Pattern": "name"
 					}
 				},
-
-				"ID":
-				{
-					"type":"Integer",
-					"min":0,
-					"max":31,
-					"dependency": 
-					{
-						"source":"target",
-						"value":"one",
-						"check":"equals",
-						"action":"show"
+				"ID": {
+					"type": "Integer",
+					"min": 0,
+					"max": 31,
+					"dependency": {
+						"source": "target",
+						"value": "one",
+						"check": "equals",
+						"action": "show"
 					}
 				},
-
-				"Start ID":
-				{
-					"type":"Integer",
-					"min":0,
-					"max":31,
-					"dependency": 
-					{
-						"source":"target",
-						"value":"range",
-						"check":"equals",
-						"action":"show"
+				"Start ID": {
+					"type": "Integer",
+					"min": 0,
+					"max": 31,
+					"dependency": {
+						"source": "target",
+						"value": "range",
+						"check": "equals",
+						"action": "show"
 					}
 				},
-				
-				"End ID":
-				{
-					"type":"Integer",
-					"default":9,
-					"min":0,
-					"max":31,
-					"dependency": 
-					{
-						"source":"target",
-						"value":"range",
-						"check":"equals",
-						"action":"show"
+				"End ID": {
+					"type": "Integer",
+					"default": 9,
+					"min": 0,
+					"max": 31,
+					"dependency": {
+						"source": "target",
+						"value": "range",
+						"check": "equals",
+						"action": "show"
 					}
 				},
-
-				"Mode":
-				{
-					"type":"Enum",
-					"options":
-					{
-						"Full":"full",
-						"AB":"ab",
-						"A":"a",
-						"B":"b"
-					}
-				},
-
-				"Pattern":
-				{
-					"type":"Enum",
-					"options":
-					{
-						"Dots":"bank1",
-						"Strobe":"bank2",
-						"Pulse":"bank3",
-						"Fade":"bank4",
-						"Flash":"bank5",
-						"FT1 Dots":"dots",
-						"FT1 Strobe":"strobe",
-						"FT1 Pulse":"pulse",
-						"FT1 Fade":"fade",
-						"FT1 Flash":"flash",
-					},
-						
-				},
-
-				"Position":
-				{
-					"type":"Enum",
-					"options":
-					{
-						"1":"0",
-						"2":"1",
-						"3":"2",
-						"4":"3",
-						"5":"4",
-						"6":"5",
-						"7":"6",
-						"8":"7"
-					},
-					"dependency": 
-					{
-						"source":"pattern", 
-						"value":"bank1",
-						"check":"equals",
-						"action":"show"
-					}
-				},
-
-				"Position ":
-				{
-					"type":"Enum",
-					"options":
-					{
-						"1":"0",
-						"2":"1",
-						"3":"2",
-						"4":"3",
-						"5":"4",
-						"6":"5",
-						"7":"6",
-						"8":"7"
-					},
-					"dependency": 
-					{
-						"source":"pattern", 
-						"value":"bank2",
-						"check":"equals",
-						"action":"show"
-					}
-				},
-
-				"Position  ":
-				{
-					"type":"Enum",
-					"options":
-					{
-						"1":"0",
-						"2":"1",
-						"3":"2",
-						"4":"3",
-						"5":"4",
-						"6":"5",
-						"7":"6",
-						"8":"7"
-					},
-					"dependency": 
-					{
-						"source":"pattern", 
-						"value":"bank3",
-						"check":"equals",
-						"action":"show"
-					}
-				},
-
-				"Position   ":
-				{
-					"type":"Enum",
-					"options":
-					{
-						"1":"0",
-						"2":"1",
-						"3":"2",
-						"4":"3",
-						"5":"4",
-						"6":"5",
-						"7":"6",
-						"8":"7"
-					},
-					"dependency": 
-					{
-						"source":"pattern", 
-						"value":"bank4",
-						"check":"equals",
-						"action":"show"
-					}
-				},
-
-				"Position    ":
-				{
-					"type":"Enum",
-					"options":
-					{
-						"1":"0",
-						"2":"1",
-						"3":"2",
-						"4":"3",
-						"5":"4",
-						"6":"5",
-						"7":"6",
-						"8":"7"
-					},
-					"dependency": 
-					{
-						"source":"pattern", 
-						"value":"bank5",
-						"check":"equals",
-						"action":"show"
-					}
-				},
-
-				"Speed":
-				{
-					"type":"Integer",
-					"min":1,
-					"max":8,
-					"default":4
-				},
-
-				"Brightness":
-				{
-					"type":"Integer",
-					"min":1,
-					"max":6,
-					"default":6
-				},
-
-				"Color A":
-				{
-					"type":"Color",
-					"default":[1,0,0,1]
-				},
-
-				"Color B":
-				{
-					"type":"Color",
-					"default":[0,1,0,1],
-					"dependency": 
-					{
-						"source":"mode",
-						"value":"ab",
-						"check":"equals",
-						"action":"show"
+				"Name Pattern": {
+					"type": "String",
+					"value": "VP*",
+					"dependency": {
+						"source": "target",
+						"value": "name",
+						"check": "equals",
+						"action": "show"
 					}
 				}
-				
 			}
 		},
-
-		"Gradient":
-		{
-			"menu":"Advanced",
-			"callback":"gradient",
-			"parameters":
-			{
-				"Start ID":
-				{
-					"type":"Integer",
-					"min":0,
-					"max":31
-				},
-				
-				"End ID":
-				{
-					"type":"Integer",
-					"default":9,
-					"min":0,
-					"max":31
-				},
-
-				"Start Color":
-				{
-					"type":"Color",
-					"default":[1,0,0,1]
-				},
-
-				"End Color":
-				{
-					"type":"Color",
-					"default":[0,0,1,1]
+		"Set Brighteness": {
+			"menu": "",
+			"callback": "brightness",
+			"parameters": {
+				"Level": {
+					"type": "Integer",
+					"min": 1,
+					"max": 6
 				}
-				
 			}
 		},
-
-		"Point":
-		{
-			"menu":"Advanced",
-			"callback":"point",
-			"parameters":
-			{
-				"Start ID":
-				{
-					"type":"Integer",
-					"min":0,
-					"max":31
+		"Black Out": {
+			"menu": "",
+			"callback": "blackOut",
+			"parameters": {
+				"Enable": {
+					"type": "Boolean",
+					"default": true
 				},
-				
-				"End ID":
-				{
-					"type":"Integer",
-					"default":9,
-					"min":0,
-					"max":31
+			}
+		},
+		"Program": {
+			"menu": "Advanced",
+			"callback": "lprog",
+			"parameters": {
+				"Target": {
+					"type": "Enum",
+					"options": {
+						"All": "all",
+						"One": "one",
+						"Range": "range",
+						"Name": "name"
+					}
 				},
-
-				"Position":
-				{
-					"type":"Float",
-					"default":0.5,
-					"min":0,
-					"max":1
+				"ID": {
+					"type": "Integer",
+					"min": 0,
+					"max": 31,
+					"dependency": {
+						"source": "target",
+						"value": "one",
+						"check": "equals",
+						"action": "show"
+					}
 				},
-
-				"Size":
-				{
-					"type":"Float",
-					"default":0.1,
-					"min":0,
-					"max":1
+				"Start ID": {
+					"type": "Integer",
+					"min": 0,
+					"max": 31,
+					"dependency": {
+						"source": "target",
+						"value": "range",
+						"check": "equals",
+						"action": "show"
+					}
 				},
-
-				"Fade":
-				{
-					"type":"Float",
-					"default":0.5,
-					"min":0,
-					"max":1
+				"End ID": {
+					"type": "Integer",
+					"default": 9,
+					"min": 0,
+					"max": 31,
+					"dependency": {
+						"source": "target",
+						"value": "range",
+						"check": "equals",
+						"action": "show"
+					}
 				},
-
-				"Color":
-				{
-					"type":"Color",
-					"default":[1,1,1,1]
+				"Name Pattern": {
+					"type": "String",
+					"value": "VP*",
+					"dependency": {
+						"source": "target",
+						"value": "name",
+						"check": "equals",
+						"action": "show"
+					}
+				},
+				"Mode": {
+					"type": "Enum",
+					"options": {
+						"Full": "full",
+						"AB": "ab",
+						"A": "a",
+						"B": "b"
+					}
+				},
+				"Pattern": {
+					"type": "Enum",
+					"options": {
+						"Dots": "bank1",
+						"Strobe": "bank2",
+						"Pulse": "bank3",
+						"Fade": "bank4",
+						"Flash": "bank5",
+						"FT1 Dots": "dots",
+						"FT1 Strobe": "strobe",
+						"FT1 Pulse": "pulse",
+						"FT1 Fade": "fade",
+						"FT1 Flash": "flash",
+					}
+				},
+				"Position": {
+					"type": "Enum",
+					"options": {
+						"1": "0",
+						"2": "1",
+						"3": "2",
+						"4": "3",
+						"5": "4",
+						"6": "5",
+						"7": "6",
+						"8": "7"
+					},
+					"dependency": {
+						"source": "pattern",
+						"value": "bank1",
+						"check": "equals",
+						"action": "show"
+					}
+				},
+				"Position ": {
+					"type": "Enum",
+					"options": {
+						"1": "0",
+						"2": "1",
+						"3": "2",
+						"4": "3",
+						"5": "4",
+						"6": "5",
+						"7": "6",
+						"8": "7"
+					},
+					"dependency": {
+						"source": "pattern",
+						"value": "bank2",
+						"check": "equals",
+						"action": "show"
+					}
+				},
+				"Position  ": {
+					"type": "Enum",
+					"options": {
+						"1": "0",
+						"2": "1",
+						"3": "2",
+						"4": "3",
+						"5": "4",
+						"6": "5",
+						"7": "6",
+						"8": "7"
+					},
+					"dependency": {
+						"source": "pattern",
+						"value": "bank3",
+						"check": "equals",
+						"action": "show"
+					}
+				},
+				"Position   ": {
+					"type": "Enum",
+					"options": {
+						"1": "0",
+						"2": "1",
+						"3": "2",
+						"4": "3",
+						"5": "4",
+						"6": "5",
+						"7": "6",
+						"8": "7"
+					},
+					"dependency": {
+						"source": "pattern",
+						"value": "bank4",
+						"check": "equals",
+						"action": "show"
+					}
+				},
+				"Position    ": {
+					"type": "Enum",
+					"options": {
+						"1": "0",
+						"2": "1",
+						"3": "2",
+						"4": "3",
+						"5": "4",
+						"6": "5",
+						"7": "6",
+						"8": "7"
+					},
+					"dependency": {
+						"source": "pattern",
+						"value": "bank5",
+						"check": "equals",
+						"action": "show"
+					}
+				},
+				"Speed": {
+					"type": "Integer",
+					"min": 1,
+					"max": 8,
+					"default": 4
+				},
+				"Brightness": {
+					"type": "Integer",
+					"min": 1,
+					"max": 6,
+					"default": 6
+				},
+				"Color A": {
+					"type": "Color",
+					"default": [
+						1,
+						0,
+						0,
+						1
+					]
+				},
+				"Color B": {
+					"type": "Color",
+					"default": [
+						0,
+						1,
+						0,
+						1
+					],
+					"dependency": {
+						"source": "mode",
+						"value": "ab",
+						"check": "equals",
+						"action": "show"
+					}
+				}
+			}
+		},
+		"Gradient": {
+			"menu": "Advanced",
+			"callback": "gradient",
+			"parameters": {
+				"Start ID": {
+					"type": "Integer",
+					"min": 0,
+					"max": 31
+				},
+				"End ID": {
+					"type": "Integer",
+					"default": 9,
+					"min": 0,
+					"max": 31
+				},
+				"Start Color": {
+					"type": "Color",
+					"default": [
+						1,
+						0,
+						0,
+						1
+					]
+				},
+				"End Color": {
+					"type": "Color",
+					"default": [
+						0,
+						0,
+						1,
+						1
+					]
+				}
+			}
+		},
+		"Point": {
+			"menu": "Advanced",
+			"callback": "point",
+			"parameters": {
+				"Start ID": {
+					"type": "Integer",
+					"min": 0,
+					"max": 31
+				},
+				"End ID": {
+					"type": "Integer",
+					"default": 9,
+					"min": 0,
+					"max": 31
+				},
+				"Position": {
+					"type": "Float",
+					"default": 0.5,
+					"min": 0,
+					"max": 1
+				},
+				"Size": {
+					"type": "Float",
+					"default": 0.1,
+					"min": 0,
+					"max": 1
+				},
+				"Fade": {
+					"type": "Float",
+					"default": 0.5,
+					"min": 0,
+					"max": 1
+				},
+				"Color": {
+					"type": "Color",
+					"default": [
+						1,
+						1,
+						1,
+						1
+					]
 				}
 			}
 		}

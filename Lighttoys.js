@@ -553,7 +553,6 @@ function getMaskForTarget(target, propID, startID, endID, namePattern) {
 
 			var dName = local.parameters.deviceNames.getChild("device" + i).get();
 			if (dName == "") continue;
-			script.log(dName);
 			if (dName.matches(namePattern)) {
 				targetMask.push(deviceIDs[i]);
 			}
@@ -691,7 +690,6 @@ function rgbToHex(r, g, b) {
 
 function sendCommand(command, targetMask, content) {
 
-	script.log("send command",command,targetMask,content);
 	var suffix = "";
 
 	if (content != undefined) suffix = "," + content;
@@ -708,7 +706,6 @@ function sendCommand(command, targetMask, content) {
 }
 
 function sendMessage(message) {
-	script.log("Send Message ",message);
 	local.send(message + "\n");
 }
 

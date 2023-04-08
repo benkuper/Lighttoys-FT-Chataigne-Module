@@ -13,11 +13,14 @@ var updatingNames;
 
 var broadcastPairIndex = 0;
 
+
+
 for (var i = 0; i < MAX_DEVICES; i++) {
 	colors1[i] = [0, 0, 0];
 	colors2[i] = [0, 0, 0];
 	slaveCheckList[i] = false;
 	deviceIDs[i] = "";
+
 }
 
 
@@ -118,8 +121,7 @@ function moduleParameterChanged(param) {
 		sendMessage("mecho " + (local.parameters.enableEcho.get() ? "1" : "0"));
 	} else if (param.name == "blackout") {
 		sendMessage("gmute " + (isBlackoutMode() ? 1 : 0));
-	}else if(param.name == "shutdownAll")
-	{
+	} else if (param.name == "shutdownAll") {
 		sendMessage("goff 0");
 	}
 }
@@ -208,14 +210,12 @@ function dataReceived(data) {
 		var dataSplit = data.substring(4, data.length).split(";");
 		var deviceID = dataSplit[0].substring(3, dataSplit[0].length);
 		var propID = getPropIDForDeviceID(deviceID);
-		if (dataSplit.length > 5)
-		{
+		if (dataSplit.length > 5) {
 			var propName = dataSplit[5].substring(3, dataSplit[5].length);
 			if (!(propID < 0)) local.parameters.deviceNames.getChild("device" + propID).set(propName);
 		}
 
-		if (dataSplit.length > 6)
-		{
+		if (dataSplit.length > 6) {
 			var modelName = dataSplit[6].substring(3, dataSplit[6].length);
 			if (!(propID < 0)) local.parameters.deviceModels.getChild("device" + propID).set(modelName);
 		}
@@ -288,10 +288,9 @@ function color(target, propID, startID, endID, namePattern, mode, color1, color2
 function startShow(target, propID, startID, endID, namePattern, showID, delay, startTime, duration, brightness) {
 	var targetMask = getMaskForTarget(target, propId, startID, endID, namePattern);
 	var playCmd = showID - 1;
-	if (delay > 0) playCmd += ",h" + parseInt(delay * 1000);
-	if (startTime > 0) playCmd += ",o" + parseInt(startTime * 1000);
-
-	if (duration > 0) playCmd += ",d" + parseInt(duration * 1000);
+	//if (delay > 0) playCmd += ",h" + parseInt(delay * 1000);
+	if (startTime > 0) playCmd += ",o" + parseInt(util.toStringFixed(startTime * 1000));
+	if (duration > 0) playCmd += ",d" + parseInt(util.toStringFixed(duration * 1000));
 	playCmd += ",b" + parseInt(brightness - 1);
 
 	sendCommand("splay", targetMask, playCmd); //this number is 2^MAX_DEVICES - 1

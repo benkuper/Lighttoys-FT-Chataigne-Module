@@ -43,7 +43,7 @@ function update() {
 
 		}
 		
-		if(lastCheckTime > lastReceiveTime + 1)
+		if(time > lastReceiveTime + 6)
 		{
 			remoteIsON.set(false);
 		}

@@ -3,16 +3,16 @@ var MAX_DEVICES = 32; //constants
 var slaveCheckList = [];
 var deviceIDs = [];
 var pairingMode = local.parameters.pairing.isPairing;
+var remoteIsON = local.parameters.communication.remoteIsON;
 var colors1 = [];
 var colors2 = [];
 
 var alwaysUpdate = local.parameters.communication.alwaysUpdate.get();
 var lastUpdateTime = 0;
+var lastReceiveTime = 0;
 
 var updatingNames;
-
 var broadcastPairIndex = 0;
-
 
 
 for (var i = 0; i < MAX_DEVICES; i++) {
@@ -20,7 +20,6 @@ for (var i = 0; i < MAX_DEVICES; i++) {
 	colors2[i] = [0, 0, 0];
 	slaveCheckList[i] = false;
 	deviceIDs[i] = "";
-
 }
 
 
@@ -42,6 +41,11 @@ function update() {
 			for (var i = 0; i < MAX_DEVICES; i++) slaveCheckList[i] = false;
 			sendMessage("glist");
 
+		}
+		
+		if(lastCheckTime > lastReceiveTime + 1)
+		{
+			remoteIsON.set(false);
 		}
 
 		if (alwaysUpdate) sendAllColors();
@@ -128,6 +132,10 @@ function moduleParameterChanged(param) {
 
 //Events
 function dataReceived(data) {
+	
+	remoteIsON.set(true);
+	lastReceiveTime = util.getTime();
+	
 	if (data.substring(0, 3) == "GRP") {
 		var dataSplit = data.split(";");
 		var pairingTarget = dataSplit[0].substring(6, dataSplit[0].length);

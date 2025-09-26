@@ -81,7 +81,10 @@ function sendAllColors() {
 }
 
 function moduleParameterChanged(param) {
-	if (param.name == "pingAll") {
+	if(param.name == "isConnected")
+	{
+		if (!local.parameters.isConnected.get()) remoteIsON.set(false);
+	}else if (param.name == "pingAll") {
 		ping("all", 0, 0, 0);
 	} else if (param.name == "blackOut") {
 		if (!isGroupMode()) sendMessage("leach 0,-1,-1,-1,-1,-1,-1"); //fix for bug in firmware, selects all untis for gmute
